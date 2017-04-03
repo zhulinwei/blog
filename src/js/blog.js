@@ -70,9 +70,8 @@ $(function(){
             if( data.length === 0 ){
                 return $('.lastest').html('<h3>暂无更新</h3>')
             }
-            console.log( data )
             let html = Blog.create( data );
-            $('.lastest').append( html )
+            $('.lastest').html( html )
         })
     });
 

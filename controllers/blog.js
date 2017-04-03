@@ -81,9 +81,7 @@ let getLastest = ( skip,limit ) => {
 let getCatalog = () => {
     return Catalog.find()
     	.select('catalogName')
-        .then( (data) => {
-            return Promise.resolve( data );
-        }).catch( (error) => {
+        .catch( (error) => {
             return Promise.reject( error );
         })
 }
@@ -91,10 +89,12 @@ let getCatalog = () => {
 let getActile = {
     catalog: ( req,res,next,Id) => {// 获取侧边栏所属文章
         return Acticle.find({
-            superior: Id
-        }).then(function(data){
-            res.json( data );
-        })
+                superior: Id
+            })
+            .sort({ meta: -1 })        
+            .then(function(data){
+                res.json( data );
+            })
     },
     acticle: ( req,res,next,Id) => {// 获取文章详细内容
         return Acticle.findOne({
@@ -111,9 +111,6 @@ let getActile = {
 
 let showBlog = ( req,res,next ) => {
 
-    console.log( req.body )
-    console.log( req.query )
-
     let query = url.parse( req.url ).query;
     let type = querystring.parse(query).type;
     let Id = querystring.parse(query).Id
@@ -121,7 +118,6 @@ let showBlog = ( req,res,next ) => {
     if( !type ){
         return Promise.all([getStickyPost(), getLastest(), getCatalog()])
             .then(function( data ){
-                console.log( data )
                 res.render('blog/blog.html', {stickyPosts: data[0], lastests: data[1], catalog: data[2]})
             })
             .catch( (error) => {

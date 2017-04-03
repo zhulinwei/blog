@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "38dbd37c60133f480b83"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ca711d8fe6e09012e39f"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -11510,9 +11510,8 @@ $(function () {
             if (data.length === 0) {
                 return $('.lastest').html('<h3>暂无更新</h3>');
             }
-            console.log(data);
             var html = Blog.create(data);
-            $('.lastest').append(html);
+            $('.lastest').html(html);
         });
     });
 
