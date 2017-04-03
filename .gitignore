@@ -1,0 +1,10 @@
+# ignore folder
+public/img/thumbnail/
+public/img/ueditor/
+public/img/ueditor_temp/
+node_modules
+logs
+tmp
+
+# ignore
+models/db.js
