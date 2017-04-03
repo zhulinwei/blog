@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="author" content="zhulinwei">
+    <meta name="keywords" content="个人博客，个人网站，技术博客，成长笔记">
+    <meta name="Description" content="记录一个菜鸟通往全栈工程师的成长之路">
+    <meta name="format-detection" content="telephone=no">
+    <title>Level.Z Backstage</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/vender.js"></script>
+    <script src="/js/backstage.js"></script>
+</head>
+
+<body>
+    <div class="page">
+        <!--遮罩层-->
+        <div id="shadow"></div>  
+
+        <nav class="nav-side nav-side-xs left-page">
+            <ul>
+                <li class="text-center nav-side-header">
+                    <img alt="image" class="img-circle" src="img/11383495812e176d705855ddb9.jpg" width="80px;" height="80px;" /></span>
+                    <p class="author">Level.Z</p>
+                    <p class="explain">博客后台管理系统</p>
+                </li>
+
+
+                <li class="side-first-level first-top side-first-level-active">
+                    <a href="javascript:;" class="nav-home">
+                        <i class="nav-icon nav-home-icon"></i>
+                        <span>首页</span>
+                    </a>
+                </li>
+
+                <li class="side-first-level">
+                    <a href="javascript:;" class="nav-catalog">
+                        <i class="nav-icon nav-catalog-icon"></i>
+                        <span>目录管理</span>
+                    </a>
+                </li>
+
+                <li class="side-first-level">
+                    <a href="javascript:;" class="nav-article">
+                        <i class="nav-icon nav-article-icon"></i>
+                        <span>文章管理</span>
+                        <span class="drop-image"></span>
+                    </a>
+                    <ul class="side-second-level">
+                        <$ catalogs.forEach(function( data ){ $>
+                            <li><a name="<$= data._id $>" id="a" class="catalog" href="javascript:;"><$= data.catalogName $></a></li>
+                        <$ }) $>
+                    </ul>
+                </li>
+                <li class="side-first-level">
+
+                    <a href="javascript:;" class="nav-album">
+                        <i class="nav-icon nav-album-icon"></i>
+                        <span>图片管理</span>
+                    </a>
+                </li>
+                <li class="side-first-level">
+
+                    <a href="javascript:;" class="nav-public">
+                        <i class="nav-icon nav-public-icon"></i>
+                        <span>发布文章</span>
+                    </a>
+                </li>
+                <li class="side-first-level">
+
+                    <a href="javascript:;" class="nav-comment">
+                        <i class="nav-icon nav-comment-icon"></i>
+                        <span>评论管理</span>
+                    </a>
+                </li>
+                <li class="side-first-level">
+                    <a href="javascript:;" class="nav-accounts">
+                        <i class="nav-icon nav-accounts-icon"></i>
+                        <span>帐号管理</span>
+                        <span class="drop-image"></span>
+                    </a>
+                    <ul class="side-second-level">
+                        <li><a class="accounts-modify" href="javascript:;">修改密码</a></li>
+                        <li><a class="accounts-list" href="javascript:;">管理员列表</a></li>
+                    </ul>
+
+                </li>
+            </ul>
+        </nav>
+
+        <div class="right-page right-page-xs">
+            <div class="row">
+                <nav class="navbar nav-top white-color">
+                    <div class="navbar-header nav-top-bottom">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                            aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar black-color"></span>
+                            <span class="icon-bar black-color"></span>
+                            <span class="icon-bar black-color"></span>
+                        </button>
+                    </div>
+                    <div id="navbar" class="collapse navbar-collapse">
+                        <a class="hidden-xs nav-top-icon" href="javascript:;">
+                            <i class="glyphicon glyphicon-chevron-left"></i>
+                            <i class="glyphicon glyphicon-chevron-right hide"></i>
+                        </a>
+
+                        <!--navbar-left、navbar-right:min-width为768的情况下左浮动，右浮动-->
+                        <ul class="nav navbar-right pull-right navbar-top-body navbar-top-body-xs">
+
+                            <li class="dropdown navbar-left">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                                    <i class="glyphicon glyphicon-envelope hidden-xs"></i> 系统消息
+                                    <span class="badge hidden-xs"><$= news $></span>
+                                </a>
+                            </li>
+                            <li class="navbar-left">
+                                <a href="javascript:;">
+                                    <i class="glyphicon glyphicon-log-out hidden-xs"></i> 退
+                                    <span class="navbar-top-body-space"></span>出
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <!--row结束-->
+
+            
+            <div class="row main">
+                <!--home-page开始-->
+                <div id="home-page">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 ">
+                        <div class="statistical">
+                            <div class="statistical-list">
+                                <p class="statistical-list-header">总文章数量</p>
+                                <div class="statistical-list-body">
+                                    <p>共<strong><$= acticles $></strong>遍</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div class="statistical">
+                            <div class="statistical-list">
+                                <p class="statistical-list-header">最近更新文章数量</p>
+                                <div class="statistical-list-body">
+                                    <p>共<strong><$= updateNumber $></strong>遍</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div class="statistical">
+                            <div class="statistical-list">
+                                <p class="statistical-list-header">总阅读人次</p>
+                                <div class="statistical-list-body">
+                                    <p>共<strong><$= readingNumber $></strong>次</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--row结束-->
+        </div>
+        <!--right-page结束-->
+
+    </div>
+    <!--page结束-->
+
+    
+    <$- include('./home_page.html') $>
+    <$- include('./catalog_page.html') $>
+    <$- include('./article_page.html') $>
+    <$- include('./article_edit.html') $>
+    <$- include('./album_page.html') $>
+    <$- include('./public_page.html') $>
+    <$- include('./account_list.html') $>
+    <$- include('./account_modify.html') $>
+
+</body>
+
+</html>

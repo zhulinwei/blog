@@ -1,0 +1,3 @@
+为了更加适合本项目的使用需求，在ueditor.config.js中添加window.UEDITOR_HOME_URL = '/js/ueditor/';将ueditor指向
+/js/ueditor/，同时在app.js中，app.use('/js/ueditor/ue',...)，其他ueditor所需要的文件夹放置public目录下即可，而
+所需的语言配置则放置在本文件夹下的lang文件夹中

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="author" content="zhulinwei">
+    <meta name="keywords" content="个人博客，个人网站，技术博客，成长笔记">
+	<meta name="Description" content="记录一个菜鸟通往全栈工程师的成长之路">
+    <meta name="format-detection" content="telephone=no">
+	<title>Level.Z BLOG</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/vender.js"></script>
+    <script src="/js/blog.js"></script>
+    <style>
+        
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top" id="header">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" style="height: 40px;">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand visible-xs" href="javascript:;"></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <img class="logo hidden-xs" src="/img/logo.png"  alt="logo" width="150px" height="90px">
+
+                <ul class="nav navbar-nav pull-right navbar-right head-center">
+                    <li><a href="/index.html"><span class="blackColor">主页</span></a></li>
+                    <li><a href="/blog.html"><span class="blackColor">博客</span></a></li>
+                    <li><a href="javascript:;"><span class="blackColor">相册</span></a></li>
+                    <li><a href="javascript:;"><span class="blackColor">联系我</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container main main-xs">
+        <!--置顶文章开始-->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="block-title block-title-xs">
+                    <span>置顶文章</span>
+                </div>
+                <ul class="sticky-posts">
+                    <li class="item">
+                        <$ if( stickyPosts ){ $>
+                            <article>
+                                <a href="/blog.html?type=acticle&Id=<$= stickyPosts._id $>">
+                                    <div class="sticky-posts-img-container latest-article-img-container-xs">
+                                        <div class="latest-article-img-preview" style="background-image: url('/img/thumbnail/<$= stickyPosts.thumbnail $>')"></div>
+                                    </div> 
+                                    <section class="article-summary sticky-posts-summary">
+                                        <span class="article-title article-title-xs"><$= stickyPosts.title $></span>
+                                        <p><$= stickyPosts.outline $>...<span class="article-read-all">阅读全文 ></span></p>
+                                        <div class="pull-right">
+                                            <a href="/index.html">
+                                                <strong>Level.Z</strong>
+                                            </a>
+                                            <!--点号垂直居中vel.Z</a>-->
+                                            <span class="article-dot">.</span>
+                                            <a href="javascript:;">
+                                                <strong>0</strong>条评论
+                                            </a>
+                                            <span class="article-dot">.</span>
+                                            <time>
+                                                <strong><$= stickyPosts.meta.updateAt $></strong>
+                                            </time>
+                                            <!--点号垂直居中-->
+                                        </div>
+                                    </section>
+                                </a>
+                                
+                            </article>
+                        <$ }else{ $>
+                            <p>暂无置顶文章</p>
+                        <$ } $>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <!--置顶文章结束-->
+        
+        <!--最新文章开始-->
+        <div class="row">
+            <div class= "col-sm-9 ">
+                <div class="block-title block-title-xs">
+                    <span>最新文章</span>
+                </div>
+                
+                <ul class="items lastest">
+                    <$ lastests.forEach(function( data ){ $>
+                        <li class="item">
+                            <article>
+                                <a href="blog.html?type=acticle&Id=<$= data._id $>">
+                                    <div class="latest-article-img-container latest-article-img-container-xs">
+                                        <div class="latest-article-img-preview" style="background-image: url('/img/thumbnail/<$= data.thumbnail $>')"></div>
+                                    </div>
+                                    <section class="article-summary latest-article">
+                                        <span class="article-title article-title-xs"><$= data.title $></span>
+                                        <p><$= data.outline $> ...<span class="article-read-all">阅读全文 ></span></p>
+                                        <div class="pull-right">
+                                            <a href="/index.html">
+                                                <strong>Level.Z</strong>
+                                            </a>
+                                            <!--点号垂直居中vel.Z</a>-->
+                                            <span class="article-dot">.</span>
+                                            <a href="javascript:;">
+                                                <strong>0</strong>条评论
+                                            </a>
+                                            <span class="article-dot">.</span>
+                                            <time>
+                                                <strong><$= data.meta.updateAt $></strong>
+                                            </time>
+                                            <!--点号垂直居中-->
+                                        </div>
+                                    </section>
+                                </a>
+                            </article>
+                        </li>
+                    <$ }) $>
+                </ul>
+            </div>
+            <!--最新文章结束-->
+            
+
+            <!--侧边栏目录开始-->
+            <aside class="col-xs-3 col-sm-3 hidden-xs">
+                <ul class="category">
+
+                    <li class="category-title">
+                        文章类别
+                    </li>
+                    <$ catalog.forEach(function(data){ $>
+                        <li class="category-item">
+                            <a href="/blog.html?type=catalog&Id=<$= data._id $>"><$= data.catalogName $></a>
+                        </li>
+                    <$ }) $>
+                </ul>
+            </aside>
+            <!--侧边栏目录结束-->
+        </div>
+
+        <div class="row">
+            <div class="loadmore loadmore_line hidden">
+                <span class="loadmore__tips">暂无更多文章</span>
+            </div>
+            <div class="loader col-lg-12 hidden" curr='1'>
+                <div class="line-scale">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div> 
+    </div>
+    
+</body>
+</html>

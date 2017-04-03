@@ -1,0 +1,91 @@
+html,body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    background-color: #343434;
+}
+
+/*登录框*/
+.login-box {
+    width: 35%;
+    min-width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, 0);  
+}
+
+/*登录框头部*/
+.login-box-header {
+    text-align: center;
+    padding-top: 1px;
+    padding-bottom: 8px;
+    border-bottom: 1px #343434 solid;
+}
+
+/*登录框主体*/
+.login-box-body {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.form-input {
+    border: 1px #ccc solid;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.form-input i {
+    position: relative;
+    left: 10px;
+    top: 2px;
+}
+
+/*错误提示*/
+.tip {
+    padding-left: 10px;
+    padding-top: 2px;
+    color: red;
+}
+
+.tip i {
+    position: relative;
+    top: 2px;
+}
+
+/*按钮*/
+.btn-confirm, .btn-confirm:link {
+    width: 100%;
+    margin: 20px 0;
+    color: #fff;
+    background-color: #343434;
+}
+
+.btn-confirm:hover, .btn-confirm:focus {
+    color: #fff;
+    outline: none;
+}
+
+.form-input input {
+    width: 90%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    outline: none;
+    border: 0px;
+}
+
+/*进度条*/
+#nprogress .bar {
+    background: #29d;
+    position: fixed;
+    z-index: 1031;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+}

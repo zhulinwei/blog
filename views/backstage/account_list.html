@@ -1,0 +1,53 @@
+<style type="text" id="accounts-list">
+    <div id="administrator-list">
+        <div class="col-lg-12 main-header">
+            <span>
+                <a href="javascript:;" class="btn btn-delete del-batch"><i class="glyphicon glyphicon-warning-sign"></i>批量删除</a>
+                <a href="javascript:;" class="btn btn-add"><i class="glyphicon glyphicon-plus"></i>添加普通管理员</a>
+            </span>
+            <span class="pull-right">共有<strong><%= total %></strong>位管理员</span>
+        </div>
+        <div class="main-body table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="batch-selection">
+                        </th>
+                        <th>管理员编号</th>
+                        <th>管理员名称</th>
+                        <th>管理员权限</th>
+                        <th>编辑管理</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% administrators.forEach(function(administrator,i){ %>
+                        <tr>
+                            <% if( administrator.jurisdiction ){ %>
+                                <th><input type="checkbox" name="<%= administrator._id %>" disabled="disabled" ></th>
+                            <% }else{ %>
+                                <th><input type="checkbox" name="<%= administrator._id %>"></th>                                
+                            <% } %>
+                            <td><%= i+1 %></td>
+                            <td><strong class="catalogName"><%= administrator.adminName %></strong></td>
+                            <% if( administrator.jurisdiction ){ %>
+                                <td><strong>拥有全部权限</strong></td>
+                            <% }else{ %>
+                                <td><strong>只能进行查询操作，不能进行更新删除与编辑</strong></td>
+                            <% } %>
+                            <td>
+                                <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="修改目录名称">
+                                    <i class="glyphicon glyphicon-pencil" name="<%= administrator._id %>"></i>
+                                </a>
+                                <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除目录">
+                                    <i class="glyphicon glyphicon-trash" name="<%= administrator._id %>"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <span class="paging pull-right"></span>
+        </div>
+    </div>
+</style>

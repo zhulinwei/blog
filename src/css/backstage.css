@@ -1,0 +1,1049 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html,body {
+    height: 100%;
+    background-color: #4C3B2F;
+}
+
+ul,ol,dl,dd,dt,li {
+    list-style: none;
+}
+
+.col-md-2 {
+    padding-left: 0;
+}
+
+a,a:hover {
+    text-decoration: none;
+}
+
+a,a:link,a:active,a:hover,a:visited {
+    text-decoration: none;
+}
+
+.page {
+    width: 100%;
+}
+
+/*侧边栏开始*/
+.nav-side {
+    width: 16.5%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    background-color: #4C3B2F;
+}
+
+.nav-side-header {
+    color: #fff;
+    padding-top: 40px;
+    background-color: #F1AC59;
+}
+
+.nav-side-header .author {
+    font-size: 18px;
+}
+
+.nav-side-header .explain {
+    font-size: 12px;
+    position: relative;
+    top: -10px;
+}
+
+/*一级菜单*/
+.side-first-level {
+    background: #4C3B2F;
+    /*防止一级菜单超出body高度后出现空白*/
+}
+
+.side-first-level a {
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    position: relative;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15%;
+    /*增加侧边栏的凹凸感*/
+    border-left: 1px #4C3B2F solid; 
+}
+
+.side-first-level a:hover {
+    color: #F1AC59;
+    border-left: 0; 
+    background-color: #37281E;
+}
+
+.side-first-level-active {
+    border-left: 3px #F1AC59 solid; 
+    background-color: #37281E;
+}
+
+.side-first-level-active a span{
+    color: #F1AC59;
+}
+
+
+/*进度条*/
+#nprogress .bar {
+    background: #29d;
+    position: fixed;
+    z-index: 1031;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+}
+
+.first-top {
+    margin-top: -9px;
+}
+
+.top-offset-4 {
+    margin-top: 4px
+}
+
+.top-offset-8 {
+    margin-top: 8px
+}
+
+/*下拉图标*/
+.side-first-level .drop-image {
+    width:0; 
+    height:0; 
+    border:5px solid; 
+    border-color:#ccc #4C3B2F #4C3B2F #4C3B2F;
+    position: absolute;
+    top: 18px;
+    right: 5%;
+}
+
+/*side-first-level-active状态下的下拉图标*/
+.side-first-level a:hover .drop-image,.side-first-level-active .drop-image {
+    border-color:#ccc #37281E #37281E #37281E;
+}
+
+/*二级菜单*/
+.side-first-level .side-second-level {
+    display: none;
+}
+.side-first-level .side-second-level li a {
+    font-size: 14px;
+    padding-left: 35%;
+}
+
+.side-first-level .side-second-level-active {
+    color: #F1AC59;
+}
+
+/*侧边栏图标*/
+.nav-icon {
+    display: inline-block;    
+    width: 20px;
+    height: 15px;
+    position: relative;
+    top: 2px;
+}
+
+/*首页*/
+.nav-home-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -146px;
+}
+
+/*目录管理*/
+.nav-catalog-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -217px;
+}
+
+/*文章管理*/
+.nav-article-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -433px;            
+}
+
+/*相册管理*/
+.nav-album-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -72px;
+}
+
+/*发布文章*/
+.nav-public-icon {
+    background: url(/img/icons.jpg) no-repeat 0 0;    
+}
+
+/*评论管理*/
+.nav-comment-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -648px;        
+}
+
+/*帐号管理*/
+.nav-accounts-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -720px;            
+}
+/*侧边栏结束*/
+
+/*主体内容开始*/
+
+.right-page {
+    width: 83.5%;
+    height: 100%;
+    padding: 0 15px;
+    position: relative;
+    left: 16.5%;
+    min-height: 1200px;
+    background-color: #EDEEF2;
+}
+
+/*头部导航栏开始*/
+
+.nav-top a {
+    color: #999999;
+}
+
+.nav-top-icon {
+    width: 50px;
+    height: 60px;
+    line-height: 60px;
+    padding-left: 10px;
+    display: inline-block;
+}
+
+.navbar-top-body {
+    display: inline-block;
+    margin-right: 0px;
+    background-color: #fff;
+}
+
+.nav-top li a, .nav-top li a:link, .nav-top li a:hover {
+    background-color: #fff;
+}
+
+.nav-top .nav .open>a:focus, .nav .open>a:visited {
+    background-color: #fff;
+}
+
+.nav-top-bottom {
+    border-bottom: 1px EDEEF2 solid
+}
+
+/*头部导航栏结束*/
+
+
+/*首页统计表开始*/
+.statistical {
+    min-height: 100px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    position: relative;
+}
+
+.statistical-list {
+    width: 100%;
+    min-height: 100px;
+    background: #fff;
+}
+
+.statistical-list-header {
+    padding-left: 30px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px #EDEEF2 solid;
+}
+
+.statistical-list-body {
+    padding-left: 30px;
+}
+/*首页统计表结束*/
+
+/*相册管理开始*/
+
+#album-page div a img {
+    height: 200px;
+}
+
+/*发布文章开始*/
+#public-page {
+    overflow: hidden;
+    background-color: #fff;
+    margin: 0 auto;
+}
+
+
+#album-page {
+    background-color: #fff;
+    height: 800px;
+}
+
+/*帐号管理开始*/
+.accounts-page-title {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 25px;
+    border-bottom: 2px #EDEEF2 solid;
+}
+
+.accounts-page-body {
+    padding-top: 20px;
+}
+
+.accounts-page-body .explain {
+    padding-top: 2px;
+    color: #666;
+}
+
+
+/*公共样式开始*/
+.btn-add:link {
+    color: #fff;
+    background-color: #5A98DE;
+}
+
+.btn-add:hover {
+    color: #fff;
+    background-color: #0a6999;
+}
+
+.btn-delete {
+    color: #fff;
+    background-color: #DD514C;    
+}
+
+.btn-delete:link {
+    color: #fff;
+    background-color: #DD514C;    
+}
+.btn-delete:hover {
+    color: #fff;
+    background-color: #c62b26;
+}
+
+/*背景颜色*/
+
+.white-color {
+    background-color: #fff;
+}
+
+.black-color {
+    background-color: #000;
+}
+
+/*编辑器*/
+#editor {
+    width: 100%;
+    min-height: 800px;
+}
+
+/*透明层样式*/
+ #shadow {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 9999;
+}
+
+.form-control:focus {
+    border-color: #4C3B2F;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 2px rgba(76,59,47, .6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 2px rgba(76,59,47, .6);
+}
+
+/*表格样式开始*/
+.right-page table thead tr th,
+.right-page table tbody tr th,
+.right-page table tbody tr td {
+    text-align: center;
+    vertical-align: middle
+}
+
+.right-page table tbody td a {
+    color: #000;
+    margin-right: 5px;
+    vertical-align: middle
+}
+
+
+.main-header {
+    padding: 10px 30px;
+    background-color: #fff;
+}
+
+.main-header a i {
+    padding-right: 5px
+}
+
+.main-header span:last-child {
+    margin-top: 8px;
+}
+
+.main-body {
+    background: #fff;
+    padding: 5px 30px;
+    color: #000
+}
+
+
+/*提醒框，编辑框*/
+.edit,
+.reminder {
+    width: 300px;
+    border-radius: 5px;
+    background-color: red;
+    position: absolute;
+    top: 200px;
+    left: 25%;
+    z-index: 2;
+    background-color: #fff;
+    z-index: 9999;
+}
+
+.edit-header,
+.reminder-header {
+    padding: 10px 0 10px 20px;
+    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.edit-header i,
+.reminder-header i {
+    position: relative;
+    top: 3px;
+}
+
+.edit-header .glyphicon-remove,
+.reminder-header .glyphicon-remove {
+    color: #000;    
+    float: right;
+    padding-right: 20px;
+}
+
+.edit-header .glyphicon-remove:hover, 
+.reminder-header .glyphicon-remove:hover {
+    color: #666;
+}
+
+.edit-body,
+.reminder-body  {
+    padding: 20px 0 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.edit-footer,
+.reminder-footer  {
+    padding: 10px 20px;
+}
+
+.edit-footer .btn-default,
+.reminder-footer .btn-default  {
+    margin-left: 10px;
+}
+
+.edit-input {
+    width: 90%;
+    height: 25px;
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px #5A98DE solid;
+}
+
+/*开关按钮样式*/
+[class|=switch] {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    border-radius: 16px;
+    line-height: 32px;
+    -webkit-tap-highlight-color:rgba(255,255,255,0);
+}
+.slider {
+    position: absolute;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    left: 0;
+    top: -1px;
+}
+.switch-on {
+    border: 1px solid white;
+    box-shadow: white 0px 0px 0px 16px inset;
+    transition: border 0.4s, box-shadow 0.2s, background-color 1.2s;
+    background-color: white;
+    cursor: pointer;
+}
+.switch-on .slider {
+    left: 25px;
+    transition: background-color 0.4s, left 0.2s;
+}
+.switch-off {
+    border: 1px solid #dfdfdf;
+    transition: border 0.4s, box-shadow 0.4s;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset;
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+.switch-off .slider {
+    transition: background-color 0.4s, left 0.2s;
+}
+
+/*文件上传样式*/
+[class^="dropify-font-"]:before, [class*=" dropify-font-"]:before, .dropify-font:before, .dropify-wrapper .dropify-message span.file-icon:before, .dropify-wrapper .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-filename span.file-icon:before {
+    display: inline-block;
+    margin-right: .2em;
+    margin-left: .2em;
+    width: 1em;
+    text-align: center;
+    text-decoration: inherit;
+    text-transform: none;
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-family: "dropify";
+    line-height: 1em;
+    speak: none;
+}
+
+ .dropify-font-file:before {
+    content: '\e801'; 
+ }
+
+.dropify-wrapper {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: 5px 10px;
+    width: 100%;
+    height: 200px;
+    max-width: 100%;
+    border: 2px solid #E5E5E5;
+    background-color: #FFF;
+    background-image: none;
+    color: #777;
+    text-align: center;
+    font-size: 14px;
+    font-family: "Roboto", "Helvetica Neue", "Helvetica", "Arial";
+    line-height: 22px;
+    cursor: pointer;
+    -webkit-transition: border-color 0.15s linear;
+    transition: border-color 0.15s linear;
+}
+
+.dropify-wrapper:hover {
+    background-image: -webkit-linear-gradient(135deg, #F6F6F6 25%, transparent 25%, transparent 50%, #F6F6F6 50%, #F6F6F6 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg, #F6F6F6 25%, transparent 25%, transparent 50%, #F6F6F6 50%, #F6F6F6 75%, transparent 75%, transparent);
+    background-size: 30px 30px;
+    -webkit-animation: stripes 2s linear infinite;
+    animation: stripes 2s linear infinite;
+}
+
+.dropify-wrapper.has-preview .dropify-clear {
+    display: block;
+}
+
+.dropify-wrapper.has-error {
+    border-color: #F34141;
+}
+
+.dropify-wrapper.has-error .dropify-message .dropify-error {
+    display: block;
+}
+
+.dropify-wrapper.has-error:hover .dropify-errors-container {
+    visibility: visible;
+    opacity: 1;
+    -webkit-transition-delay: 0s;
+    transition-delay: 0s;
+}
+
+.dropify-wrapper.disabled input {
+    cursor: not-allowed;
+}
+
+.dropify-wrapper.disabled:hover {
+    background-image: none;
+    -webkit-animation: none;
+    animation: none;
+}
+
+.dropify-wrapper.disabled .dropify-message {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+.dropify-wrapper.disabled .dropify-infos-message {
+    display: none;
+}
+
+.dropify-wrapper input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.dropify-wrapper .dropify-message {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.dropify-wrapper .dropify-message span.file-icon {
+    color: #CCC;
+    font-size: 50px;
+}
+
+.dropify-wrapper .dropify-message p {
+    margin: 5px 0 0 0;
+}
+
+.dropify-wrapper .dropify-message p.dropify-error {
+    display: none;
+    color: #F34141;
+    font-weight: bold;
+}
+
+.dropify-wrapper .dropify-clear {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 7;
+    display: none;
+    padding: 4px 8px;
+    border: 2px solid #FFF;
+    background: none;
+    color: #FFF;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 11px;
+    font-family: "Roboto", "Helvetica Neue", "Helvetica", "Arial";
+    opacity: 0;
+    -webkit-transition: all 0.15s linear;
+    transition: all 0.15s linear;
+}
+
+.dropify-wrapper .dropify-clear:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dropify-wrapper .dropify-preview {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+    overflow: hidden;
+    padding: 5px;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF;
+    text-align: center;
+}
+
+.dropify-wrapper .dropify-preview .dropify-render img {
+    position: relative;
+    top: 50%;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: #FFF;
+    -webkit-transition: border-color 0.15s linear;
+    transition: border-color 0.15s linear;
+    -webkit-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+}
+
+.dropify-wrapper .dropify-preview .dropify-render i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #777;
+    font-size: 70px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.dropify-wrapper .dropify-preview .dropify-render .dropify-extension {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    margin-top: 10px;
+    width: 42px;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: -0.03em;
+    font-weight: 900;
+    font-size: 13px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.dropify-wrapper .dropify-preview .dropify-infos {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    -webkit-transition: opacity 0.15s linear;
+    transition: opacity 0.15s linear;
+}
+
+.dropify-wrapper .dropify-preview .dropify-infos .dropify-infos-inner {
+    position: absolute;
+    top: 50%;
+    padding: 0 20px;
+    width: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    -webkit-transform: translate(0, -40%);
+    transform: translate(0, -40%);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.dropify-wrapper .dropify-preview .dropify-infos .dropify-infos-inner p {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    color: #FFF;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+    line-height: 25px;
+}
+
+.dropify-wrapper .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-filename span.file-icon {
+    margin-right: 2px;
+}
+
+.dropify-wrapper .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-infos-message {
+    position: relative;
+    margin-top: 15px;
+    padding-top: 15px;
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+.dropify-wrapper .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-infos-message::before {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 30px;
+    height: 2px;
+    background: #FFF;
+    content: '';
+    -webkit-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+}
+
+.dropify-wrapper:hover .dropify-clear {
+    opacity: 1;
+}
+
+.dropify-wrapper:hover .dropify-preview .dropify-infos {
+    opacity: 1;
+}
+
+.dropify-wrapper:hover .dropify-preview .dropify-infos .dropify-infos-inner {
+    margin-top: -5px;
+}
+
+.dropify-wrapper.touch-fallback {
+    height: auto !important;
+}
+
+.dropify-wrapper.touch-fallback:hover {
+    background-image: none;
+    -webkit-animation: none;
+    animation: none;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview {
+    position: relative;
+    padding: 0;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-render {
+    position: relative;
+    display: block;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-render .dropify-font-file {
+    position: relative;
+    top: 0;
+    left: 0;
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-render .dropify-font-file::before {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-render img {
+    position: relative;
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-infos {
+    position: relative;
+    background: transparent;
+    opacity: 1;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-infos .dropify-infos-inner {
+    position: relative;
+    top: 0;
+    padding: 5px 90px 5px 0;
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-infos .dropify-infos-inner p {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    color: #777;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 25px;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-filename {
+    font-weight: bold;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-infos-message {
+    position: relative;
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 11px;
+    opacity: 1;
+}
+
+.dropify-wrapper.touch-fallback .dropify-preview .dropify-infos .dropify-infos-inner p.dropify-infos-message::before {
+    display: none;
+}
+
+.dropify-wrapper.touch-fallback .dropify-message {
+    padding: 40px 0;
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.dropify-wrapper.touch-fallback .dropify-clear {
+    top: auto;
+    bottom: 23px;
+    border-color: rgba(119, 119, 119, 0.7);
+    color: #777;
+    opacity: 1;
+}
+
+.dropify-wrapper.touch-fallback.has-preview .dropify-message {
+    display: none;
+}
+
+.dropify-wrapper.touch-fallback:hover .dropify-preview .dropify-infos .dropify-infos-inner {
+    margin-top: 0;
+}
+
+.dropify-wrapper .dropify-loader {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 9;
+    display: none;
+}
+
+.dropify-wrapper .dropify-loader::after {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-top: 1px solid #CCC;
+    border-right: 1px solid #777;
+    border-bottom: 1px solid #777;
+    border-left: 1px solid #CCC;
+    border-radius: 100%;
+    content: '';
+    -webkit-animation: rotate 0.6s linear infinite;
+    animation: rotate 0.6s linear infinite;
+}
+
+.dropify-wrapper .dropify-errors-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    visibility: hidden;
+    background: rgba(243, 65, 65, 0.8);
+    text-align: left;
+    opacity: 0;
+    -webkit-transition: visibility 0s linear 0.15s,opacity 0.15s linear;
+    transition: visibility 0s linear 0.15s,opacity 0.15s linear;
+}
+
+.dropify-wrapper .dropify-errors-container ul {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin: 0;
+    padding: 10px 20px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.dropify-wrapper .dropify-errors-container ul li {
+    margin-left: 20px;
+    color: #FFF;
+    font-weight: bold;
+}
+
+.dropify-wrapper .dropify-errors-container.visible {
+    visibility: visible;
+    opacity: 1;
+    -webkit-transition-delay: 0s;
+    transition-delay: 0s;
+}
+
+.dropify-wrapper ~ .dropify-errors-container ul {
+    margin: 15px 0;
+    padding: 0;
+}
+
+.dropify-wrapper ~ .dropify-errors-container ul li {
+    margin-left: 20px;
+    color: #F34141;
+    font-weight: bold;
+}
+
+@-webkit-keyframes stripes {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 60px 30px;
+    }
+}
+
+@keyframes stripes {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 60px 30px;
+    }
+}
+
+@-webkit-keyframes rotate {
+    0% {
+        -webkit-transform: rotateZ(-360deg);
+        transform: rotateZ(-360deg);
+    }
+
+    100% {
+        -webkit-transform: rotateZ(0deg);
+        transform: rotateZ(0deg);
+    }
+}
+
+@keyframes rotate {
+    0% {
+        -webkit-transform: rotateZ(-360deg);
+        transform: rotateZ(-360deg);
+    }
+
+    100% {
+        -webkit-transform: rotateZ(0deg);
+        transform: rotateZ(0deg);
+    }
+}
+
+
+/*公共样式结束*/
+
+
+@media(min-width: 768px){
+    .nav-top {
+        height: 60px;
+        /*padding-right: 30px;*/
+        /*background-color: #fff;*/
+    }
+
+    .nav-top li {
+        height: 38px;
+        line-height: 38px;
+        text-align: center
+    }
+
+}
+
+ @media( max-width: 768px) {
+    .hidden-xs {
+        display: none
+    }
+
+    .right-page-xs {
+        width: 100%;
+        left: 0%;
+    }
+
+    /*头部导航栏开始*/
+    .nav-side-xs {
+        width: 0px;
+        overflow: hidden;
+    }
+
+    .navbar-top-body-space {
+        display: inline-block;
+        width: 2em;
+    }
+
+    .navbar-top-body-xs {
+        padding-right: 0px;    
+    }
+
+    .navbar-top-body-xs li a {
+        padding: 10px 10px;
+        float: right;       
+    }
+
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>后台管理登录页面</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/vender.js"></script>
+    <script src="/js/login.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-box">
+            <header class="login-box-header">
+                <h3>后台管理登录</h3>
+            </header>
+            <div class="login-box-body">
+                <form class="form-inline" method="POST" action="/login" >
+                    <div class="form-input">
+                        <i class="glyphicon glyphicon-user"></i>
+                        <input type="text" id="username" placeholder="这里输入登录名">
+                    </div>
+                    <!--错误提示-->
+                    <div class="tip admin-error hidden">
+                        <i class="glyphicon glyphicon-remove"></i>
+                        <span></span>
+                    </div>
+                    <div class="form-input">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                        <input type="password" id="password" placeholder="这里输入密码">
+                    </div>
+                    <!--错误提示-->                    
+                    <div class="tip password-error hidden">
+                        <i class="glyphicon glyphicon-remove"></i>
+                        <span></span>
+                    </div>
+                    
+                    <input type="button" class="btn btn-confirm" value="确定">
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</body>
+
+</html>

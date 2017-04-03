@@ -1,0 +1,48 @@
+<style type="text" id="catalog">
+    <div id="catalog-page">
+        <div class="col-lg-12 main-header">
+            <span>
+                <a href="javascript:;" class="btn btn-delete del-batch"><i class="glyphicon glyphicon-warning-sign"></i>批量删除</a>
+                <a href="javascript:;" class="btn btn-add"><i class="glyphicon glyphicon-plus"></i>添加目录</a>
+            </span>
+            <span class="pull-right">共有<strong><%= total %></strong>条目录</span>
+        </div>
+        <div class="main-body table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="batch-selection">
+                        </th>
+                        <th>目录编号</th>
+                        <th>目录名称</th>
+                        <th>文章数量</th>
+                        <th>编辑管理</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% catalogs.forEach(function(catalog,i){ %>
+                        <tr>
+                            <th><input type="checkbox" name="<%= catalog._id %>"></th>
+                            <td><%= i+1 %></td>
+                            <td class="a"><strong class="catalogName"><%= catalog.catalogName %></strong></td>
+                            <% if( !catalog.sum ){ %>
+                                <td><strong>0</strong></td>
+                            <% }else{ %>
+                                <td><strong><%= catalog.sum %></strong></td>
+                            <% } %>
+                            <td>
+                                <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="修改目录名称">
+                                    <i class="glyphicon glyphicon-pencil" name="<%= catalog._id %>"></i>
+                                </a>
+                                <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除目录">
+                                    <i class="glyphicon glyphicon-trash" name="<%= catalog._id %>"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</style>
