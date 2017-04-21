@@ -1,4 +1,3 @@
-<p align="center"><a href="http://www.51linwei.top/" target="_blank"><img width="200" src="http://www.51linwei.top/img/logo.png"></a></p>
 
 ## Intro
 
@@ -23,4 +22,6 @@ Details changes for each release are documented in the [release notes](https://g
 
 ## address
 
-<p align=""><img width="200" src="http://www.51linwei.top/img/1492783304.png"></p>
+![](http://www.51linwei.top/img/1492783304.png)
+
+
