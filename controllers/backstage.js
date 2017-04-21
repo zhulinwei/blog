@@ -294,24 +294,22 @@ let ArticleEdit = ( req,res,next ) => {
             }
         })
         .then( (data) => {
-
-            // 将图片路径由临时文件夹改为为文件夹中的路径
-            let content = req.body.content.replace(/\img\/ueditor_temp/g,'img/ueditor');
-            
-            return Acticle.findOneAndUpdate({
-                        _id: req.body.acticleId
-                    },{
-                        superior: req.body.superior,
-                        title: req.body.title,
-                        outline: req.body.outline,
-                        content: req.body.content,
-                        stickyPost: req.body.stickyPost,
-                        lastest: req.body.lastest
-                        
-                    })
+            return Acticle.findOne({_id: req.body.acticleId})
         })
         .then( (data) => {
-            res.json({"code":1})
+            // 将图片路径由临时文件夹改为为文件夹中的路径
+            let content = req.body.content.replace(/\img\/ueditor_temp/g,'img/ueditor');
+            data.superior = req.body.superior;
+            data.title = req.body.title;
+            data.outline = req.body.outline;
+            data.content = req.body.content;
+            data.stickyPost = req.body.stickyPost;
+            data.lastest = req.body.lastest;
+            data.meta.updateAt = new Date().getTime();
+            return data.save();
+        })
+        .then((data) => {
+            res.json({"code":1})            
         })
         .catch( (error) => {
             return Promise.reject( error );

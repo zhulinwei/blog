@@ -18,7 +18,6 @@ global.Promise = Promise;
 global.mongoose = mongoose;
 global.dirname = process.cwd();
 
-
 const app = express();
 
 let log = log4js.getLogger('logInfo');

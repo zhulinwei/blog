@@ -9,7 +9,6 @@ const browserSync = require('browser-sync').create();
 const reload = browserSync.reload;
 let webpackConfig = require('./webpack.config.js');
 let webpackProductionConfig = require('./webpack.production.config.js');
-
 let config =  process.env.NODE_ENV === 'production' ? webpackProductionConfig : webpackConfig;
 
 gulp.task('watch', () => {
@@ -36,7 +35,7 @@ gulp.task('watch', () => {
 
 gulp.task('webpack', (callback) => {
 	console.log('webpack start...')
-	webpack(config, (err,stats) => {
+	webpack(webpackProductionConfig, (err,stats) => {
 		if(err){
 			throw new gutil.PluginError('webpack', err);
 		}

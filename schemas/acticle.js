@@ -28,7 +28,6 @@ let ActicleSchema = new mongoose.Schema({
     }
 });
 
-
 ActicleSchema.pre('save', function(next) {// 注意，在这个地方不能使用箭头函数
     if( this.isNew ){
         this.meta.createAt = this.meta.updateAt = new Date().getTime();
@@ -36,6 +35,6 @@ ActicleSchema.pre('save', function(next) {// 注意，在这个地方不能使�
         this.meta.updateAt = new Date().getTime();
     }
     next();
-})
+});
 
 module.exports = ActicleSchema;
