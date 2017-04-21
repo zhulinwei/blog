@@ -200,7 +200,7 @@ a:link,a:hover {
     font-size: 20px;
     font-weight: 600;
     /*文本全部大写*/
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     border-top: 1px solid #ccc;
 }
 

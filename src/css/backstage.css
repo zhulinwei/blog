@@ -258,9 +258,10 @@ a,a:link,a:active,a:hover,a:visited {
 /*首页统计表结束*/
 
 /*相册管理开始*/
-
-#album-page div a img {
+#album-page div a.thumbnail {
     height: 200px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 /*发布文章开始*/
