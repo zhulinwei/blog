@@ -382,9 +382,9 @@ let thumbnailSave = ( req,res,next ) => {
         // 取出来缩略图文件名
 
         // 本地环境:windows
-        res.json({"code": 1, "path": req.file.path.split('thumbnail\\')[1]});
+        // res.json({"code": 1, "path": req.file.path.split('thumbnail\\')[1]});
         // 生产环境:linux
-        // res.json({"code": 1, "path": req.file.path.split('thumbnail/')[1]});
+        res.json({"code": 1, "path": req.file.path.split('thumbnail/')[1]});
     })
 }
 
