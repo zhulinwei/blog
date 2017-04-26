@@ -180,6 +180,11 @@ a,a:link,a:active,a:hover,a:visited {
 
 /*帐号管理*/
 .nav-accounts-icon {
+    background: url(/img/icons.jpg) no-repeat 0 -796px;
+}
+
+/*网站统计*/
+.nav-count-icon {
     background: url(/img/icons.jpg) no-repeat 0 -720px;            
 }
 /*侧边栏结束*/
