@@ -1,6 +1,7 @@
 // 将bootstrap样式引入js模块中
 require('../css/laypage.css');
 require('../css/backstage.css');
+require('script-loader!./util.js');
 require("script-loader!./plugs/laypage.js");
 require("script-loader!./plugs/ejs.min.js");
 require("script-loader!./plugs/nprogress.js");

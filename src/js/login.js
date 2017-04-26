@@ -1,6 +1,5 @@
-
 require('../css/login.css');
-// require("script-loader!./plugs/nprogress.js");
+require('script-loader!./util.js');
 require("script-loader!./plugs/nprogress.js");
 
 $(function(){

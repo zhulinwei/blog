@@ -1,5 +1,5 @@
-'use strict'
 require('../css/blog.css');
+require('script-loader!./util.js');
 require("script-loader!./plugs/moment.js");
 require("script-loader!./plugs/ejs.min.js");
 require("script-loader!./plugs/nprogress.js");
