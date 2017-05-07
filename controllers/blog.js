@@ -23,10 +23,13 @@ let Blog = {
             status = '小时前'
         }else if( string.indexOf('day','days') !== -1 ){
             status = '天前'
+        }else if( string.indexOf('month','months') !== -1 ){
+            status = '月前'
         }else if( string.indexOf('year','years') !== -1 ){
             status = '年前'
         }
         return ( time + status ).replace(/^(an|a)/,'1');
+        // return ( time + status );
     }
 }
 
@@ -59,8 +62,8 @@ let getLastest = ( skip,limit ) => {
             lastest: true
         })
         .skip(hop)
+        .sort({ 'meta.createAt': -1 })
         .limit(length)
-        .sort({ meta: -1 })
         .lean()// 必须加上lean否则无法进行时间戳的转化
         .then( (data) => {
             // 在存在最新文章的情况下

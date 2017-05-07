@@ -1,6 +1,4 @@
 require('../css/blog.css');
-require('script-loader!./util.js');
-require("script-loader!./plugs/moment.js");
 require("script-loader!./plugs/ejs.min.js");
 require("script-loader!./plugs/nprogress.js");
 require("script-loader!./plugs/headroom.min.js");
@@ -20,9 +18,7 @@ $(function(){
         create: function( acticles ){
             let that = this;
             let html = '';
-            // let updateAt = '';
             acticles.forEach(function( acticle ){
-                // this.translate( moment(data.meta.updateAt).toNow(true))
                 html += '<li class="item">';
                 html += '   <article>';
                 html += '       <a href="blog.html?type=acticle&Id=' + acticle._id + '">';
@@ -42,7 +38,7 @@ $(function(){
                 html += '                   </a>';
                 html += '                   <span class="article-dot">.</span>';
                 html += '                   <time>';
-                html += '                       <strong>' + that.translate( moment(acticle.meta.updateAt).toNow(true)) + '</strong>';
+                html += '                       <strong>' + acticle.meta.createAt + '</strong>';
                 html += '                   </time>';
                 html += '               </div>';
                 html += '           </section>';
@@ -51,23 +47,6 @@ $(function(){
                 html += '</li>';
             })
             return html;
-        },
-        translate: ( string ) => {
-            let time = string.split(' ')[0]
-
-            let status = ''
-            if( string.indexOf('second','seconds') !== -1 ){
-                status = '秒前'
-            }else if( string.indexOf('minute','minutes') !== -1 ){
-                status = '分钟前'
-            }else if( string.indexOf('hour','hours') !== -1 ){
-                status = '小时前'
-            }else if( string.indexOf('day','days') !== -1 ){
-                status = '天前'
-            }else if( string.indexOf('year','years') !== -1 ){
-                status = '年前'
-            }
-            return ( time + status ).replace(/^(an|a)/,'1');
         }
     };
 

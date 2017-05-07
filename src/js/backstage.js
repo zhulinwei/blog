@@ -1,7 +1,6 @@
 // 将bootstrap样式引入js模块中
 require('../css/laypage.css');
 require('../css/backstage.css');
-require('script-loader!./util.js');
 require("script-loader!./plugs/laypage.js");
 require("script-loader!./plugs/ejs.min.js");
 require("script-loader!./plugs/nprogress.js");
@@ -604,7 +603,7 @@ $(function(){
         element: '#article-page',
         editElement: '#article-edit',
         curr: 1,// 默认当前页面
-        limit: 2,// 默认显示数量
+        limit: 10,// 默认显示数量
         editUrl: '/backstage.html/nav_article/article_edit',
         deleteUrl: '/backstage.html/nav_article/article_del',
         acticleUrl: '/backstage.html/nav_article/article_det',

@@ -181,7 +181,6 @@ a:link,a:hover {
 }
 
 /*侧边栏目录*/
-
 .category {
     margin-bottom: 21px;
     padding: 28px;
@@ -215,6 +214,10 @@ a:link,a:hover {
 
 .acticle acticle {
     font-size: 16px;
+}
+
+.acticle acticle img {
+    max-width: 100%;
 }
 /*加载中*/
 @-webkit-keyframes line-scale {
@@ -382,5 +385,10 @@ a:link,a:hover {
         width: 100%;
         height: 180px;
     }
-    
+
+    /*文章详情*/
+    .acticle {
+        padding: 0 20px;
+        font-size: 12px;
+    }
 }

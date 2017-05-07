@@ -54,7 +54,7 @@ let getImgUrl = function( content ){
 
 // 分页
 let paging = ( curr ) => {
-	let limit = 2;
+	let limit = 10;
 	let skip = (curr-1) * limit;
 	return {
 		curr: curr || 0,

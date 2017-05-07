@@ -86,7 +86,6 @@ a,a:link,a:active,a:hover,a:visited {
     color: #F1AC59;
 }
 
-
 /*进度条*/
 #nprogress .bar {
     background: #29d;
@@ -190,7 +189,6 @@ a,a:link,a:active,a:hover,a:visited {
 /*侧边栏结束*/
 
 /*主体内容开始*/
-
 .right-page {
     width: 83.5%;
     height: 100%;
@@ -202,7 +200,6 @@ a,a:link,a:active,a:hover,a:visited {
 }
 
 /*头部导航栏开始*/
-
 .nav-top a {
     color: #999999;
 }
@@ -403,10 +400,11 @@ a,a:link,a:active,a:hover,a:visited {
     width: 300px;
     border-radius: 5px;
     background-color: red;
-    position: absolute;
-    top: 200px;
-    left: 25%;
-    z-index: 2;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -75px;
+    margin-left: -150px;
     background-color: #fff;
     z-index: 9999;
 }

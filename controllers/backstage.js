@@ -1,18 +1,14 @@
 'use strict'
 
 const del = require('del');
-// const url = require('url');
 const path = require('path');
 const crypto = require('crypto');
 const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require("fs")); 
-// const querystring = require('querystring');
 const utilFile = require('../util/util.js');
+const fs = Promise.promisifyAll(require("fs"));
 let Admin = require('../models/admin.js');
 let Acticle = require('../models/acticle.js');
 let Catalog = require('../models/catalog.js');
-
-
 
 // 在线编辑时图片上传地址
 let newImagePath = path.join( dirname, '/public/img/ueditor/');
@@ -109,46 +105,44 @@ let getReadNUmber = () => {
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
+        });
 };
 
 
 // 获取数量
 let getCount = ( model,options ) => {
     return model.count(options)
-        // .then((data) => {
-        //     return Promise.resolve(data);
-        // })
         .catch((error) => {
             return Promise.reject(error)
-        })
+        });
 }
 
 // 打印数据字段
-let getField = ( model,options,fields,skip,limit ) => {
+let getField = ( model,options,fields,skip,limit,reorder ) => {
     let option = options || null;
     let hop = parseInt(skip) || 0;
     let length = parseInt(limit) || null;
+    let sort = reorder || null;
     
     return model.find(option)
         .select(fields)
     	.skip(hop)
+        .sort(sort)        
     	.limit(length)
         .catch((error) => {
             return Promise.reject(error)
-        })
+        });
 }
 
 // 展示后台首页
 let showIndex = (req, res, next) => {
-
     return Promise.all([getNews(), getActicles(), getUpdateNumber(), getReadNUmber(), getField( Catalog,null,'catalogName' )])
         .then((data) => {
             res.render('backstage/backstage.html', { news: data[0], acticles: data[1], updateNumber: data[2], readingNumber: data[3], catalogs: data[4] });
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
+        });
 };
 
 // 统计各类文章数量
@@ -161,21 +155,19 @@ let acticleTypes = () => {
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
+        });
 };
 
 
 // 首页
 let navHome = (req, res, next) => {
-
     return Promise.all([getActicles(), getUpdateNumber(), getReadNUmber()])
         .then((data) => {
             res.json(data);
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
-
+        });
 };
 
 // 目录管理
@@ -186,12 +178,11 @@ let navCatalog = (req, res, next) => {
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
+        });
 }
 
 // 添加目录
 let catalogAdd = (req, res, next) => {
-
     return Catalog.findOne({
             catalogName: req.body.catalogName
         })
@@ -207,12 +198,11 @@ let catalogAdd = (req, res, next) => {
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
+        });
 };
 
 // 删除目录
 let catalogsDel = (req, res, next) => {
-
     // remove + $in: 可以做到批量删除，catalogs是数组形式
     return Catalog.remove({ "_id": { $in: req.body.catalogs } })
         .then((data) => {
@@ -220,12 +210,11 @@ let catalogsDel = (req, res, next) => {
         })
         .catch((error) => {
             return Promise.reject(error);
-        })
+        });
 };
 
 // 更改目录
 let catalogEdit = (req, res, next) => {
-
     return Catalog.findOne({
             catalogName: req.body.catalogName
         })
@@ -233,7 +222,6 @@ let catalogEdit = (req, res, next) => {
             if (data) {
                 return res.json({ 'code': 2001, 'message': '栏目已经存在，请重新输入！' })
             }
-
             return Catalog.update({
                     _id: req.body.catalogId
                 }, {
@@ -253,9 +241,11 @@ let navArticle = ( req,res,next ) => {
     let options = {
         superior: req.query.catalogId
     }
+    let record = {'meta.createAt': -1};
     let fields = 'title thumbnail stickyPost lastest meta'; 
     let paging = utilFile.paging( req.query.curr );
-    return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit ) ])
+
+    return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit,record ) ])
         .then( (data) => {
             res.json( data ); 
         })
@@ -269,7 +259,6 @@ let ArticleDet = ( req,res,next ) => {
     let options = {
         _id: req.body.acticleId
     }
-
     return Promise.all([ getField( Catalog,null,'catalogName' ),getField( Acticle,options ) ])
         .then( (data) => {
             res.json( data ); 
@@ -281,7 +270,6 @@ let ArticleDet = ( req,res,next ) => {
 
 // 更新文章
 let ArticleEdit = ( req,res,next ) => {
-    
     let images = utilFile.getImgUrl( req.body.content );
     moveAndDeleteImage( images )
         .then( () => {
@@ -302,7 +290,7 @@ let ArticleEdit = ( req,res,next ) => {
             data.superior = req.body.superior;
             data.title = req.body.title;
             data.outline = req.body.outline;
-            data.content = req.body.content;
+            data.content = content;
             data.stickyPost = req.body.stickyPost;
             data.lastest = req.body.lastest;
             data.meta.updateAt = new Date().getTime();
@@ -318,7 +306,6 @@ let ArticleEdit = ( req,res,next ) => {
 
 // 删除文章
 let ArticleDel = ( req,res,next ) => {
-
     let curr = req.body.curr;
     let acticles = req.body.acticles;
     let imageUrls = req.body.imageUrls;
@@ -331,7 +318,6 @@ let ArticleDel = ( req,res,next ) => {
     // 删除所选文章并更新该页内容，所该页已经不存在内容的情况下，获取上一页的内容
     return Acticle.remove({ "_id": {$in: req.body.acticles} })
         .then( (data) => {
-
             return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit ) ])
         })
         .then( (data) => {
@@ -339,9 +325,7 @@ let ArticleDel = ( req,res,next ) => {
             if( data[0] !== 0 && data[1].length === 0 ){
                 curr = curr - 1;
                 let prePaging = utilFile.paging( curr );
-                
                 return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,prePaging.skip,prePaging.limit ) ])
-                
             }else{
                 // 返回当前页                
                 return data;
@@ -374,17 +358,20 @@ let navPublic = ( req,res,next ) => {
 }
 
 let thumbnailSave = ( req,res,next ) => {
+    let exist = fs.existsSync(thumbnailPath);
+
+    if(!exist){
+        fs.mkdir(thumbnailPath);
+    }
+    
     utilFile.upload(req, res, function (error) {
         if (error) {
             return Promise.reject(error);
         }
-
-        // 取出来缩略图文件名
-
         // 本地环境:windows
-        // res.json({"code": 1, "path": req.file.path.split('thumbnail\\')[1]});
+        res.json({"code": 1, "path": req.file.path.split('thumbnail\\')[1]});
         // 生产环境:linux
-        res.json({"code": 1, "path": req.file.path.split('thumbnail/')[1]});
+        // res.json({"code": 1, "path": req.file.path.split('thumbnail/')[1]});
     })
 }
 
