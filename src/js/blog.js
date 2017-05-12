@@ -47,12 +47,30 @@ $(function(){
                 html += '</li>';
             })
             return html;
-        }
+        },
+        interceptKeys: function(event) {
+                event = event || window.event; // IE support
+                var keyCode = event.keyCode;
+                var ctrlDown = event.ctrlKey || event.metaKey; // Mac support
+
+                // 不允许复制文章内容
+                if (ctrlDown && keyCode==67) {
+                    event.preventDefault();
+                    return false;
+                }
+            }
     };
+
+    // 不允许复制文章内容    
+    $('body').keydown(function(event){
+        Blog.interceptKeys(event);
+    })
 
     // 侧边栏                            
     $('.category .category-item a').click(function(event){
         event.preventDefault();
+        // 此处的添加active主要是为了滑动到底部自动加载可加载对应目录的文章
+        $(this).attr('class','active');
         $.ajax({
             type: 'get',
             url:  $(this).attr('href'),
@@ -75,15 +93,15 @@ $(function(){
         // 到达页面底部
         if ($(document).scrollTop() + $(window).height() >= $(document).height()) {
             let curr = $('.loader').attr('curr');
+            let catalogId = $('.category .category-item a.active').attr('catalogId') || null;
 
             if( curr === '0' ){
                 return false;
             }
             $('.loader').removeClass('hidden');
-            
             $.ajax({
                 type: 'get',
-                url: '/blog.html/nextActicles?curr=' + curr
+                url: '/blog.html/nextActicles?curr=' + curr + '&catalogId=' + catalogId
             }).done(function(data){
                 $('.loader').addClass('hidden');
 

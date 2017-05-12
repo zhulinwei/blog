@@ -13,7 +13,6 @@ let Blog = {
     limit: 10,// 默认每次搜索数量
     translate: ( string ) => {
         let time = string.split(' ')[0]
-
         let status = ''
         if( string.indexOf('second','seconds') !== -1 ){
             status = '秒前'
@@ -29,118 +28,100 @@ let Blog = {
             status = '年前'
         }
         return ( time + status ).replace(/^(an|a)/,'1');
-        // return ( time + status );
-    }
-}
-
-// 获取置顶文章
-let getStickyPost = () => {
-    return Acticle.findOne({
-            stickyPost: true
-        })
-        .lean()
-        .then( (data) => {
-            // 在存在置顶文章的情况下
-            if ( data ){
-                data.meta.updateAt = Blog.translate( moment(data.meta.updateAt).toNow(true) );
-                data.meta.createAt = Blog.translate( moment(data.meta.createAt).toNow(true) );
-            }
-            return Promise.resolve( data )
-        })
-        .catch( (error) => {
-            return Promise.reject( error );
-        })
-}
-
-// 获取最新文章
-let getLastest = ( skip,limit ) => {
-    let hop = parseInt(skip) || Blog.skip;
-    let length = parseInt(limit) || Blog.limit;
-
-    return Acticle.find({
-            stickyPost: false,
-            lastest: true
-        })
-        .skip(hop)
-        .sort({ 'meta.createAt': -1 })
-        .limit(length)
-        .lean()// 必须加上lean否则无法进行时间戳的转化
-        .then( (data) => {
-            // 在存在最新文章的情况下
-            if( data ){
-                data.forEach( (lastest) => {
-                    lastest.meta.updateAt = Blog.translate( moment(lastest.meta.updateAt).toNow(true) );
-                    lastest.meta.createAt = Blog.translate( moment(lastest.meta.createAt).toNow(true) );
-                })
-            }
-            return Promise.resolve( data )
-        })
-        .catch( (error) => {
-            return Promise.reject( error );
-        })
-}
-
-// 获取侧边栏
-let getCatalog = () => {
-    return Catalog.find()
-    	.select('catalogName')
-        .catch( (error) => {
-            return Promise.reject( error );
-        })
-}
-
-let getActile = {
-    catalog: ( req,res,next,Id) => {// 获取侧边栏所属文章
-        return Acticle.find({
-                superior: Id
-            })
-            .sort({ meta: -1 })        
-            .then(function(data){
-                res.json( data );
+    },
+    // 获取侧边栏
+    catalogList: () => {
+        return Catalog.find()
+            .select('catalogName')
+            .catch( (error) => {
+                return Promise.reject( error );
             })
     },
-    acticle: ( req,res,next,Id) => {// 获取文章详细内容
-        return Acticle.findOne({
-                _id: Id
-            })
-            .lean()
+    // option：查询依据、skip：忽略条数、limit：展示条数
+    acticle: (option,skip,limit) => {
+        let hop = parseInt(skip) || Blog.skip;
+        let length = parseInt(limit) || Blog.limit;
+        return Acticle.find(option)
+            .sort({ 'meta.createAt': -1 })
+            .skip(hop)
+            .limit(length)
+            .lean()            
             .then(function(data){
-                data.meta.updateAt = Blog.translate( moment(data.meta.updateAt).toNow(true) );
-                data.meta.createAt = Blog.translate( moment(data.meta.createAt).toNow(true) );
-                res.render('blog/acticle.html', { acticle: data });
+                // 在存在文章的情况下
+                if( data ){
+                    data.forEach( (lastest) => {
+                        lastest.meta.updateAt = Blog.translate( moment(lastest.meta.updateAt).toNow(true) );
+                        lastest.meta.createAt = Blog.translate( moment(lastest.meta.createAt).toNow(true) );
+                    })
+                }
+                return Promise.resolve( data )
             })
+            .catch( (error) => {
+                return Promise.reject( error );
+            })
+
     }
 }
 
-let showBlog = ( req,res,next ) => {
 
+let showBlog = ( req,res,next ) => {
     let query = url.parse( req.url ).query;
     let type = querystring.parse(query).type;
-    let Id = querystring.parse(query).Id
-
+    let Id = querystring.parse(query).Id;
+    let sticky = {// 置顶文章查询条件
+        stickyPost: true
+    };
+    let lastest = {// 最新文章查询条件  
+        stickyPost: false,
+        lastest: true
+    }
+    // 不存在type代表初次加载首页
     if( !type ){
-        return Promise.all([getStickyPost(), getLastest(), getCatalog()])
+        return Promise.all([Blog.acticle(sticky), Blog.acticle(lastest), Blog.catalogList()])
             .then(function( data ){
-                res.render('blog/blog.html', {stickyPosts: data[0], lastests: data[1], catalog: data[2]})
+                res.render('blog/blog.html', {stickyPosts: data[0][0], lastests: data[1], catalog: data[2]})
             })
             .catch( (error) => {
                 return Promise.reject( error );
             })
     }
-    // 使用策略模式获取相对应的文章
-    getActile[type](req,res,next,Id);
-}
-
-let nextActicles = ( req,res,next ) => {
-    let curr = req.query.curr;
-    let skip = curr * Blog.limit;
-    getLastest( skip,Blog.limit )
+    // 根据type判断是获取对于目录的文章列表还是文章详情
+    let option =  type === 'catalog' ? {superior: Id} : {_id: Id};
+    return Blog.acticle(option)
         .then( (data) => {
-            res.json(data)
+            if(type === 'catalog'){// 获取对于目录的文章列表
+                res.json( data );
+            }else{// 获取文章详情
+                res.render('blog/acticle.html', { acticle: data[0] });
+            }
+        })
+}
+let nextActicles = ( req,res,next ) => {
+    var skip,option;
+    // 获取下一页文章且无catalogId，代表当前在首页底部
+    if(req.query.catalogId === 'null'){
+        skip = req.query.curr * Blog.limit + 1;
+        option = {};
+    }else{
+        skip = req.query.curr * Blog.limit;
+        option = {superior: req.query.catalogId};
+    }
+
+    return Blog.acticle( option,skip )
+        .then( (data) => {
+            res.json(data);
         })
         .catch( (error) => {
             return Promise.reject( error );
         })
+
+    // return getLastest( skip,Blog.limit )
+    //     .then( (data) => {
+    //         res.json(data);
+    //     })
+    //     .catch( (error) => {
+    //         return Promise.reject( error );
+    //     })
 }
 
 

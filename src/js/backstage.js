@@ -458,6 +458,7 @@ $(function(){
                 NProgress.start();
             }
         }).done(function(data){
+            console.log( data )
             NProgress.done();
 
             let pages = Math.ceil(data.total/Album.limit)                    
@@ -608,10 +609,10 @@ $(function(){
         deleteUrl: '/backstage.html/nav_article/article_del',
         acticleUrl: '/backstage.html/nav_article/article_det',
         create: function( acticles ){
-            let html = '';
+            var html;
             acticles.forEach(function( acticle ){
-                let stickyPost = '';
-                let lastest = '';
+                var stickyPost;
+                var lastest;
                 // 是否置顶
                 if( acticle.stickyPost ){
                     stickyPost += '<td><strong>是</strong></td>'
@@ -633,6 +634,8 @@ $(function(){
                 html += '    <td>' + acticle.title + '</td>';
                 html +=      stickyPost;
                 html +=      lastest;
+                html +=      '<td><strong>' + acticle.meta.createAt + '</strong></td>';
+                html +=      '<td><strong>' + acticle.meta.createAt + '</strong></td>';
                 html += '    <td>';
                 html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="修改文章">';
                 html += '           <i class="glyphicon glyphicon-pencil" name="' + acticle._id + '"></i>';
@@ -657,16 +660,20 @@ $(function(){
             // 删除所选文章并更新该页内容，所该页已经不存在内容的情况下，获取上一页的内容
             Command.postAjax( this.deleteUrl,data )
                 .done(function(data){
-                    NProgress.done();
+                    console.log( data );
 
-                    let html = Acticle.create(data[1]);
-                    $('.main #article-page table tbody').html( html )
-                    $('.main .catalog-page-header span:last-child strong').html( data[0] );
-
+                    if(data[1].length === 0){
+                        $('.main #article-page table tbody').remove();
+                    }else{
+                        let html = Acticle.create(data[1]);
+                        $('.main #article-page table tbody').html( html );
+                    }
+                    $('.main #article-page .main-header span:last-child strong').html( data[0] );
                     let curr = data[2]
                     let pages = Math.ceil(data[0]/Acticle.limit);
-                    Acticle.laypage( false,curr,pages,catalogId )
-                    Command.closeReminder( event,element )
+                    Acticle.laypage( false,curr,pages,catalogId );
+                    Command.closeReminder( event,element );
+                    NProgress.done();
                 });
         },
         confirmDel: function( event,element ){
@@ -681,10 +688,8 @@ $(function(){
             if( type === 'warn' ){
                 return Command.closeReminder( event,element );
             }else if( type === 'singleDel' ){
-
                 let acticleId = $(event.target).attr('name');
                 let imageUrl = $('.main #article-page input[name="' + acticleId + '"]').parent().next().children('img').attr('src');
-                
 
                 acticles.push( acticleId );
                 imageUrls.push( imageUrl.split('/img/thumbnail/')[1] );
@@ -736,7 +741,6 @@ $(function(){
                         // editor准备好之后才可以使用
                         ue.setContent( acticle.content );
                     });
-
 
                     // 如果文章置顶
                     if( acticle.stickyPost ){
@@ -825,10 +829,8 @@ $(function(){
         create: function( albums ){
             let html = '';
             albums.forEach(function( album ){
-                html += '<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">';
-                html += '   <a href="javascript:;" class="thumbnail">';
-                html += '       <img src="/img/ueditor/' + album + '">';
-                html += '   </a>';
+                html += '<div class="albums-img">';
+                html += '   <div class="albums-img-preview" style="background-image: url(/img/ueditor/' + album +')"></div>';
                 html += '</div>';
             })
             return html;
@@ -848,15 +850,12 @@ $(function(){
                             first = false;
                             return;
                         }
-
                         let start = (data.curr-1) * Album.limit;
                         let end = (data.curr-1) * Album.limit + Album.limit;
-
                         let albums = list.slice( start,end );
-                        
-
                         let html = Album.create( albums );
                         $('.main #album-page .main-body').html( html );
+
                     }
             })
         }

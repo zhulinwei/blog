@@ -216,6 +216,9 @@ a,a:link,a:active,a:hover,a:visited {
     display: inline-block;
     margin-right: 0px;
     background-color: #fff;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .nav-top li a, .nav-top li a:link, .nav-top li a:hover {
@@ -273,10 +276,35 @@ a,a:link,a:active,a:hover,a:visited {
     margin: 0 auto;
 }
 
-
+/*图片管理开始*/
 #album-page {
     background-color: #fff;
     height: 800px;
+}
+
+#album-page .albums-img {
+    width: 24%;
+    height: 200px;
+    margin-right: 1%;
+    margin-bottom: 10px;
+    float: left;
+}
+
+#album-page .album-paging {
+    position: absolute;
+    top: 65%;
+    right: 40px;
+}
+
+#album-page .albums-img .albums-img-preview {
+    height: 100%;
+    overflow: hidden;
+    border-radius: 5px;
+    position: relative;
+    background-size: cover;
+    background-color: #f7f8f9;
+    background-position: center;    
+    z-index: 1;
 }
 
 /*帐号管理开始*/

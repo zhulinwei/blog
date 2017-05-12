@@ -12,6 +12,34 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/vender.js"></script>
     <script src="/js/backstage.js"></script>
+    <style>
+        .sticky-posts-img-container {
+            width: 24%;
+            height: 200px;
+            margin-right: 1%;
+            margin-bottom: 10px;
+            float: left;
+        }
+
+        .latest-article-img-preview {
+            height: 100%;
+            overflow: hidden;
+            border-radius: 5px;
+            position: relative;
+            background-size: cover;
+            background-color: #f7f8f9;
+            background-position: center;    
+            z-index: 1;
+        }
+
+        
+
+        .a {
+            position: absolute;
+            top: 65%;
+            right: 40px;
+        }
+    </style>
 </head>
 
 <body>
@@ -85,12 +113,12 @@
                         <li><a class="accounts-list" href="javascript:;">管理员列表</a></li>
                     </ul>
                 </li>
-                <li class="side-first-level">
+                <!--<li class="side-first-level">
                     <a href="https://tongji.baidu.com/web/welcome/ico?s=d22462be22df2c8a6c397bf308d5347b" target="_black" class="nav-comment">
                         <i class="nav-icon nav-count-icon"></i>
                         <span>网站统计</span>
                     </a>
-                </li>
+                </li>-->
             </ul>
         </nav>
 
@@ -112,8 +140,8 @@
                             <i class="glyphicon glyphicon-chevron-right hide"></i>
                         </a>
 
-                        <!--navbar-left、navbar-right:min-width为768的情况下左浮动，右浮动-->
-                        <ul class="nav navbar-right pull-right navbar-top-body navbar-top-body-xs">
+                        <!--navbar-left、navbar-right:min-width为768的情况下左浮动，右浮动，但是因为后期修改删除了-->
+                        <ul class="nav navbar-top-body navbar-top-body-xs">
 
                             <li class="dropdown navbar-left">
                                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/vender.js"></script>
     <script src="/js/blog.js"></script>
+    
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top" id="header">
@@ -138,7 +139,7 @@
                     </li>
                     <$ catalog.forEach(function(data){ $>
                         <li class="category-item">
-                            <a href="/blog.html?type=catalog&Id=<$= data._id $>"><$= data.catalogName $></a>
+                            <a href="/blog.html?type=catalog&Id=<$= data._id $>" catalogId="<$= data._id $>"><$= data.catalogName $></a>
                         </li>
                     <$ }) $>
                 </ul>

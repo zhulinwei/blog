@@ -10,14 +10,16 @@
             <table class="table table-bordered table-hover text-center">
                 <thead>
                     <tr>
-                        <th width="5%">
+                        <th width="2%">
                             <input type="checkbox" class="batch-selection">
                         </th>
-                        <th width="10%">文章缩略图</th>
-                        <th width="20%">文章标题</th>
+                        <th width="8%">文章缩略图</th>
+                        <th width="15%">文章标题</th>
                         <th width="5%">文章置顶</th>
                         <th width="5%">文章公开</th>
-                        <th width="10%">编辑管理</th>
+                        <th width="5%">发布时间</th>
+                        <th width="5%">更新时间</th>
+                        <th width="5%">编辑管理</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,7 +29,7 @@
                             <td>
                                 <img src="/img/thumbnail/<%= acticle.thumbnail %>" height="60px">
                             </td>
-                            <td><%= acticle.title %></td>
+                            <td><strong><%= acticle.title %></strong></td>
                             
                             <% if( acticle.stickyPost ){ %>
                                 <td><strong>是</strong></td>
@@ -40,6 +42,9 @@
                             <% }else{ %>
                                 <td><strong>否</strong></td>
                             <% } %>
+
+                            <td><strong><%= acticle.meta.createAt %></strong></td>
+                            <td><strong><%= acticle.meta.updateAt %></strong></td>
                             <td>
                                 <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="修改文章">
                                     <i class="glyphicon glyphicon-pencil"  name="<%= acticle._id %>"></i>

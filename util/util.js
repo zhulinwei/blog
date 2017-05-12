@@ -36,14 +36,14 @@ let upload = multer({
 }).single('avatar');
 
 // 获取文章的图片的文件名
-let getImgUrl = function( content ){
+let getImgUrl = function( content,dir_url ){
 	let reg = new RegExp(/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.jpeg|\.png]))[\'|\"].*?[\/]?>/g);
 	let images = content.match( reg );
 	if( images ){
 		let array = [];
 		for( let i=0, image; image=images[i++]; ){
 			let imageUrl = image.split('"')[1];
-			let imageName = imageUrl.split('/img/ueditor_temp/')[1];
+			let imageName = imageUrl.split(dir_url)[1];
 			imageName !== undefined ? imageName : null; 
 			array.push( imageName );
 		}

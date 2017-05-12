@@ -11,6 +11,9 @@ let Backstage = require('../controllers/backstage.js');
 
 // 博客首页
 router.get('/blog.html', Blog.showBlog);
+// router.get('/blog.html/nextActicles', function(){
+//     console.log('asdfasdf');
+// });
 router.get('/blog.html/nextActicles', Blog.nextActicles);
 
 // 后台登录

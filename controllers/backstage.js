@@ -3,6 +3,7 @@
 const del = require('del');
 const path = require('path');
 const crypto = require('crypto');
+const moment = require('moment');
 const Promise = require('bluebird');
 const utilFile = require('../util/util.js');
 const fs = Promise.promisifyAll(require("fs"));
@@ -126,9 +127,10 @@ let getField = ( model,options,fields,skip,limit,reorder ) => {
     
     return model.find(option)
         .select(fields)
+        .sort(sort)                
     	.skip(hop)
-        .sort(sort)        
     	.limit(length)
+        .lean()
         .catch((error) => {
             return Promise.reject(error)
         });
@@ -247,6 +249,10 @@ let navArticle = ( req,res,next ) => {
 
     return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit,record ) ])
         .then( (data) => {
+            data[1].forEach( (acticle ) => {
+                acticle.meta.createAt = moment(acticle.meta.createAt).format('YYYY-MM-DD');
+                acticle.meta.updateAt = moment(acticle.meta.updateAt).format('YYYY-MM-DD');
+            })
             res.json( data ); 
         })
         .catch((error) => {
@@ -270,7 +276,8 @@ let ArticleDet = ( req,res,next ) => {
 
 // 更新文章
 let ArticleEdit = ( req,res,next ) => {
-    let images = utilFile.getImgUrl( req.body.content );
+    let dir_url = '/img/ueditor_temp/';
+    let images = utilFile.getImgUrl( req.body.content,dir_url );
     moveAndDeleteImage( images )
         .then( () => {
             if( JSON.parse( req.body.stickyPost ) ){
@@ -318,7 +325,7 @@ let ArticleDel = ( req,res,next ) => {
     // 删除所选文章并更新该页内容，所该页已经不存在内容的情况下，获取上一页的内容
     return Acticle.remove({ "_id": {$in: req.body.acticles} })
         .then( (data) => {
-            return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit ) ])
+            return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit ) ]);
         })
         .then( (data) => {
             // 该分页已经不存在内容但上页依然有
@@ -333,18 +340,26 @@ let ArticleDel = ( req,res,next ) => {
         })
         .then( (data) => {
             data.push( curr );
-            res.json( data );
+            res.json(data);
         })
+        // 删除缩略图
         .then( () => {
             return imageUrls.map( (imageUrl) => {
-                return del([ thumbnailPath + imageUrl ])
+                if(imageUrl !== ''){
+                    return del([ thumbnailPath + imageUrl ])
+                }
             })
+        })
+        .then( () => {
+            return redis.get('blog_acticles');
+        })
+        .then( (data) => {
+            return redis.set('blog_acticles',parseInt(data) - imageUrls.length);
         })
         .catch( (error) => {
             return Promise.reject( error );
         })
 }
-
 
 // 发布文章
 let navPublic = ( req,res,next ) => {
@@ -421,7 +436,6 @@ let mainBodySave = ( req,res,next ) => {
 
             // 将图片路径由临时文件夹改为为文件夹中的路径
             let content = req.body.content.replace(/\img\/ueditor_temp/g,'img/ueditor');
-            
             return Acticle.create({
                     superior: req.body.superior,
                     title: req.body.title,
@@ -433,13 +447,13 @@ let mainBodySave = ( req,res,next ) => {
                 })
         })
         .then( (data) => {
-            res.json({"code":1})
+            res.json({"code":1});
         })
         .then( () => {
-            return redis.get('blog_acticles')
+            return redis.get('blog_acticles');
         })
         .then( (data) => {
-            return redis.set('blog_acticles',parseInt(data) + 1)
+            return redis.set('blog_acticles',parseInt(data) + 1);
         })
         .catch( (error) => {
             return Promise.reject( error );
@@ -568,9 +582,8 @@ let modifyPassword = ( req,res,next ) => {
 }
 
 let ueditor = ( req,res,next ) => {
-
     //客户端上传文件设置
-     var ActionType = req.query.action;
+    var ActionType = req.query.action;
      
     if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
         var file_url = '/img/ueditor_temp/';//默认图片上传地址：这是临时上传的文件夹

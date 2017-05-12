@@ -5,14 +5,12 @@
 			<br>
         </div>
 		<div class="col-lg-12 main-body table">
-			<% albums.forEach(function(album){ %>
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-					<a href="javascript:;" class="thumbnail">
-						<img src="/img/ueditor/<%= album %>">
-					</a>
+			<% albums.forEach(function(album,i){ %>
+				<div class="albums-img">
+					<div class="albums-img-preview" style="background-image: url('/img/ueditor/<%= album %>')"></div>
 				</div>
 			<% }) %>
-			<span class="paging pull-right" style="margin-right: 25px"></span>
 		</div>
+		<span class="paging a"></span>
 	</div>
 </style>
