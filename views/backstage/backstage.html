@@ -12,36 +12,766 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/vender.js"></script>
     <script src="/js/backstage.js"></script>
-    <style>
-        .sticky-posts-img-container {
-            width: 24%;
-            height: 200px;
-            margin-right: 1%;
-            margin-bottom: 10px;
-            float: left;
-        }
+    <script>
+        $(function(){
 
-        .latest-article-img-preview {
-            height: 100%;
-            overflow: hidden;
-            border-radius: 5px;
-            position: relative;
-            background-size: cover;
-            background-color: #f7f8f9;
-            background-position: center;    
-            z-index: 1;
-        }
+            // 一级菜单被点击时，切换背景并判断是否展开二级菜单
+            // $('.nav-side ul li').click(function( event ){
+            //     if( !$( event.target ).hasClass('catalog') ){// 这个if，实在是迫于无奈之举啊
+            //         $('.nav-side ul li.side-first-level-active').removeClass('side-first-level-active');
+            //         // 先收缩所有的二级菜单
+            //         $('.nav-side ul li .side-second-level').delay(0).slideUp(300);
+            //         $(this).addClass('side-first-level-active');
 
-        
+            //         // 如果存在二级菜单，展开
+            //         if($(this).children('ul').hasClass('side-second-level')){
+            //             // 判断二级菜单当前状态
+            //             if($(this).children('.side-second-level').css('display') === 'none'){
+            //                 $(this).children(".side-second-level").delay(0).slideDown(300);
+            //             }else{
+            //                 $(this).children(".side-second-level").delay(0).slideUp(300);
+            //             }
+            //         }
+            //     }
+            // });
 
-        .a {
-            position: absolute;
-            top: 65%;
-            right: 40px;
-        }
-    </style>
+            // // 二级菜单被点击时，添加样式
+            // $('.side-first-level .side-second-level li a').click(function(event){
+            //     if( !$(event.target).hasClass('catalog') ){
+            //         event.stopPropagation();
+            //     }
+            //     $('.side-first-level .side-second-level li a').removeClass('side-second-level-active');
+            //     $(this).addClass('side-second-level-active');
+                
+            // })
+
+            // // blog中的公共函数
+            // let Command = {
+            //     // 添加
+            //     add: function( event,element,content ){
+            //         let that = this;
+            //         let type = 'add';
+
+            //         // 操作提醒框
+            //         if( $('.main ' + element + ' .edit').length === 0 ){// 尚未创建编辑栏目框
+                        
+            //             that.showNewEdit( element,null,type,content );
+            //         }else{// 已经存在创建好的编辑栏目框，注意替换其中的Id
+
+            //             that.showExistEdit( element,null,type,content );
+            //         }
+            //     },
+            //     // 编辑管理
+            //     edit: function( event,element,content ){
+            //         let that = this;
+            //         let type = 'edit';
+            //         let Id = $(event.target).attr('name');
+                    
+            //         // 操作提醒框
+            //         if( $('.main ' + element + ' .edit').length === 0 ){// 尚未创建编辑栏目框
+                        
+            //             that.showNewEdit( element,Id,type,content );
+            //         }else{// 已经存在创建好的编辑栏目框，注意替换其中的Id
+                        
+            //             that.showExistEdit( element,Id,type,content );
+            //         }
+
+            //     },
+            //     // 创建编辑框，为添加与编辑所共用
+            //     buildEdit: function( Id,type,content ){
+            //         let name = '';
+            //         if( Id ){
+            //             name += 'name="' + Id + '"';
+            //         }
+                    
+            //         let html = "<div class='edit' name='" + type + "'>"
+            //         html += "<div class='edit-header'><i class='glyphicon glyphicon-info-sign'></i><span>" + content + "</span>";
+            //         html += "<a href='javascript:;'><i class='glyphicon glyphicon-remove edit-remove'></i></a></div>";
+            //         html += "<div class='edit-body'><input type='text' class='edit-input'></div>";
+            //         html +="<div class='edit-footer pull-right'><input type='button' value='确定' class='btn btn-success'" + name + ">";
+            //         html += "<input type='button' value='取消' class='btn btn-default edit-cancel'></div></div>";
+            //         return html;
+            //     },
+            //     showNewEdit: function( element,Id,type,content ){
+                    
+            //         let that = this;
+            //         $('#shadow').show().animate({opacity: 1}, function(){
+                            
+            //             let html = that.buildEdit( Id,type,content );
+            //             $('.main ' + element).append(html)
+            //         });
+            //     },
+            //     // showExistEdit函数为添加与编辑两者所共用
+            //     showExistEdit: function( element,Id,type,content ){
+            //         // 如果存在Id，代表该次操作为编辑目录
+            //         if( Id ){
+            //             $('.main .edit .edit-footer input').attr('name',Id);
+            //         }
+
+            //         // 清空输入框
+            //         $('.main .edit .edit-input').val('');   
+            //         $('.main .edit').attr('name',type);
+            //         $('.main .edit .edit-header span').html(content);      
+
+            //         $('#shadow').show().animate({opacity: 1}, function(){
+            //             $('.main .edit').removeClass('hidden');
+            //         });
+            //     },
+            //     closeEdit: function(){
+
+            //         $('.main .edit .edit-header').css('color','#000');// 先清除因警告用户而出现的红色字体
+            //         $('.main .edit .edit-input').val('');// 清空输入框
+            //         $('.main .edit').addClass('hidden');
+            //         $('#shadow').hide().animate({opacity: 0});
+            //     },
+            //     // 表格中的全选与反选，但不包括状态为disabled的checkbox
+            //     selectAll: function( event,element ){
+            //         if( $(event.target).attr('checked') ){
+            //             $(event.target).removeAttr('checked');
+            //             $('.main ' + element + " input[type='checkbox']:not(:disabled)").prop("checked", false);
+            //         }else{
+            //             $(event.target).attr('checked','checked')            
+            //             $('.main ' + element + " input[type='checkbox']:not(:disabled)").prop("checked", true);
+            //         }
+            //     },
+                
+            //     // 表格中的单一删除
+            //     singleDel: function( event,element ){
+
+            //         let that = this;
+            //         let type = "singleDel";
+            //         let Id = $(event.target).attr('name');
+            //         let content_enabled = "确定删除?";
+            //         let content_disabled = "不允许删除！"
+
+            //         // 如果点击垃圾箱，则勾选对应的复选框，不包括状态为disabled的checkbox
+            //         if( $('.main ' + element + ' input[name="' + Id + '"]').is(':disabled') ){
+            //             that.showReminder( element,null,type,content_disabled );
+            //         }else{
+                        
+            //             $('.main ' + element + ' input[name="' + Id + '"]').prop("checked", true);
+            //             that.showReminder( element,Id,type,content_enabled );
+            //         }
+                    
+            //     },
+            //     // 表格中的批量删除
+            //     batchDel: function( event,element ){
+            //         let that = this;
+            //         let type_warn = 'warn'
+            //         let type_batch = 'batchDel';
+            //         let content_warn = "至少勾选一个！！";
+            //         let content_batch = "确定删除所选项?";
+
+            //         // 至少勾选一个选项
+            //         if( $('.main ' + element + ' table input[type="checkbox"]:checked').length === 0 ){
+            //             that.showReminder( element,null,type_warn,content_warn );
+            //             return false;
+            //         }
+
+            //         that.showReminder( element,null,type_batch,content_batch );
+            //     },
+            //     // 构建操作提醒框，为单一删除、批量删除以及批量删除提醒框三者所共用
+            //     buildReminder: function( Id, type, content ){
+                    
+            //         let name = '';
+            //         if( Id ){// 存在Id表明为单一删除，不存在Id则指的是批量删除，只有在单一删除的情况下需要name
+            //             name += 'name ="' + Id + '"';
+            //         }
+
+            //         let html = "<div class='reminder' name = '" + type + "'>"
+            //         html += "<div class='reminder-header'><i class='glyphicon glyphicon-info-sign'></i><span>操作提醒</span>";
+            //         html += "<a href='javascript:;'><i class='glyphicon glyphicon-remove reminder-remove'" + name + "></i></a></div>";
+            //         html += "<div class='reminder-body'><p>" + content + "</p></div>";
+            //         html +="<div class='reminder-footer pull-right'><input type='button' value='确定' class='btn btn-delete'" + name + ">";
+            //         html += "<input type='button' value='取消' class='btn btn-default reminder-cancel'" + name + "></div></div>";
+            //         return html;
+            //     },
+            //     // 展示提醒操作框
+            //     showReminder: function( element,Id,type,content ){
+            //         if( $('.main .reminder').length === 0 ){// 尚未创建操作提醒
+            //             this.showNewReminder( element,Id,type,content );
+                        
+            //         }else{// 已经存在创建好的操作提醒，注意替换其中的Id
+                        
+            //             this.showExistReminder( Id,type,content )
+            //         }
+            //     },
+            //     showNewReminder: function( element,Id,type,content ){
+
+
+            //         let that = this;
+
+            //         $('#shadow').show().animate({opacity: 1}, function(){
+            //             let html = that.buildReminder( Id,type,content );
+            //             $('.main ' + element).append(html)
+            //         });
+            //     },
+            //     showExistReminder: function( Id,type,content ){
+
+            //         $('.main .reminder .reminder-remove').attr('name',Id);
+            //         $('.main .reminder .reminder-footer input').attr('name',Id);
+            //         $('.main .reminder').attr('name',type);
+            //         $('.main .reminder .reminder-body p').html(content)
+
+            //         $('#shadow').show().animate({opacity: 1}, function(){
+            //             $('.reminder').removeClass('hidden');
+            //         });
+            //     },
+            //     // 关闭操作提醒框
+            //     closeReminder: function( event,element ){
+            //         let type = $('.main .reminder').attr('name');
+            //         let Id = $(event.target).attr('name');
+
+            //         // 关闭单一删除提醒框时，取消勾选该选项
+            //         if( type === 'singleDel' || type === 'warn' ){
+            //             $('.main ' + element + ' input[name="' + Id + '"]').prop("checked", false);
+            //         }else if( type === 'batchDel' ){
+            //             // 关闭全部删除提醒框时，取消勾选全部选项
+            //             $('.main ' + element + ' input[type="checkbox"]').prop("checked", false);
+            //         }
+
+                    
+            //         $('.main .reminder').addClass('hidden');
+            //         $('#shadow').hide().animate({opacity: 0});
+            //     },
+            //     clearEdit: function( element ){
+            //         $('.main ' + element + ' input[name="title"]').val('');
+            //         $('.main ' + element + ' .dropify-preview .dropify-filename-inner').html('');  
+            //         $('.main ' + element + ' .dropify-preview .dropify-render img').removeAttr('src');  
+            //         $('.main ' + element + ' #sticky').removeClass('switch-on').addClass('switch-off').css({
+            //             'border-color' : '#dfdfdf',
+            //             'box-shadow' : 'rgb(223, 223, 223) 0px 0px 0px 0px inset',
+            //             'background-color' : 'rgb(255, 255, 255)'
+            //         });
+            //         $('.main ' + element + ' #lastest').removeClass('switch-off').addClass('switch-on').css({
+            //             'border-color' : '#4C3B2F',
+            //             'box-shadow' : '#4C3B2F' + ' 0px 0px 0px 16px inset',
+            //             'background-color' : '#4C3B2F'
+            //         });
+            //         UE.getEditor('editor').setContent( '' );
+            //     },
+            //     getAjax: function( url ){
+            //         let that = this;
+            //         return $.ajax({
+            //             type: 'get',
+            //             url: url,
+            //             beforeSend: function(){
+            //                 NProgress.start();
+            //             }
+            //         })
+            //     },
+            //     // 由于不同的业务需求，postAjax后的done函数应有不宜写在公共函数中
+            //     postAjax: function( url,data ){
+            //         let that = this;
+            //         return $.ajax({
+            //             type: 'post',
+            //             url: url,
+            //             data: data,
+            //             beforeSend: function(){
+            //                 NProgress.start();
+            //             }
+            //         })
+            //     },
+            //     // 用于文件上传
+            //     fileAjax: function( url,data ){
+            //         let that = this;
+            //         return $.ajax({
+            //             type: 'post',
+            //             url: url,
+            //             data: data,                        
+            //             processData: false,
+            //             contentType: false,
+            //             beforeSend: function(){
+            //                 NProgress.start();
+            //             }
+            //         })
+            //     },
+            //     isEmpty: function( value ){
+            //         if( value.trim().length ===0 ){
+            //             return true;
+            //         }
+            //     }
+            // };
+
+            // // 文章管理
+            // let Acticle = {
+            //     element: '#article-page',
+            //     editElement: '#article-edit',
+            //     curr: 1,// 默认当前页面
+            //     limit: 10,// 默认显示数量
+            //     editUrl: '/backstage.html/nav_article/article_edit',
+            //     deleteUrl: '/backstage.html/nav_article/article_del',
+            //     acticleUrl: '/backstage.html/nav_article/article_det',
+            //     create: function( acticles ){
+            //         var html;
+            //         acticles.forEach(function( acticle ){
+            //             var stickyPost;
+            //             var lastest;
+            //             // 是否置顶
+            //             if( acticle.stickyPost ){
+            //                 stickyPost += '<td><strong>是</strong></td>'
+            //             }else{
+            //                 stickyPost += '<td><strong>否</strong></td>'
+            //             }
+            //             // 是否公开
+            //             if( acticle.lastest ){
+            //                 lastest += '<td><strong>是</strong></td>'
+            //             }else{
+            //                 lastest += '<td><strong>否</strong></td>'
+            //             }
+
+            //             html += '<tr>';
+            //             html += '    <th><input type="checkbox" name="' + acticle._id + '"></th>';
+            //             html += '    <td>';
+            //             html += '       <img src="/img/thumbnail/' + acticle.thumbnail + '" height="60px">';
+            //             html += '    </td>';
+            //             html += '    <td>' + acticle.title + '</td>';
+            //             html +=      stickyPost;
+            //             html +=      lastest;
+            //             html +=      '<td><strong>' + acticle.meta.createAt + '</strong></td>';
+            //             html +=      '<td><strong>' + acticle.meta.createAt + '</strong></td>';
+            //             html += '    <td>';
+            //             html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="修改文章">';
+            //             html += '           <i class="glyphicon glyphicon-pencil" name="' + acticle._id + '"></i>';
+            //             html += '       </a>';
+            //             html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除文章">';
+            //             html += '           <i class="glyphicon glyphicon-trash" name="' + acticle._id + '"></i>';
+            //             html += '       </a>';
+            //             html += '    </td>';
+            //             html += '</tr>';
+            //         })
+            //         return html;
+            //     },
+            //     delete: function( event,element,catalogId,acticles,imageUrls,curr ){
+
+            //         let data = {
+            //             catalogId: catalogId,
+            //             acticles: acticles,
+            //             imageUrls: imageUrls,
+            //             curr:curr
+            //         }
+
+            //         // 删除所选文章并更新该页内容，所该页已经不存在内容的情况下，获取上一页的内容
+            //         Command.postAjax( this.deleteUrl,data )
+            //             .done(function(data){
+            //                 console.log( data );
+
+            //                 if(data[1].length === 0){
+            //                     $('.main #article-page table tbody').remove();
+            //                 }else{
+            //                     let html = Acticle.create(data[1]);
+            //                     $('.main #article-page table tbody').html( html );
+            //                 }
+            //                 $('.main #article-page .main-header span:last-child strong').html( data[0] );
+            //                 let curr = data[2]
+            //                 let pages = Math.ceil(data[0]/Acticle.limit);
+            //                 Acticle.laypage( false,curr,pages,catalogId );
+            //                 Command.closeReminder( event,element );
+            //                 NProgress.done();
+            //             });
+            //     },
+            //     confirmDel: function( event,element ){
+            //         let acticles = [];
+            //         let imageUrls = [];
+            //         let type = $('.main .reminder').attr('name');
+            //         // 获取当前页数
+            //         let curr = $('#article-page .paging .laypage_curr').html();
+            //         let catalogId = $('.nav-side .catalog.side-second-level-active').attr('name');
+
+            //         // 在至少勾选一个选项的情况下
+            //         if( type === 'warn' ){
+            //             return Command.closeReminder( event,element );
+            //         }else if( type === 'singleDel' ){
+            //             let acticleId = $(event.target).attr('name');
+            //             let imageUrl = $('.main #article-page input[name="' + acticleId + '"]').parent().next().children('img').attr('src');
+
+            //             acticles.push( acticleId );
+            //             imageUrls.push( imageUrl.split('/img/thumbnail/')[1] );
+            //         }else if( type === 'batchDel' ){
+            //             // 批量获取acticleId
+            //             $('.main input[type="checkbox"]:checked').each(function(){
+            //                 let acticleId = $(this).attr('name');
+            //                 let imageUrl = $('.main #article-page input[name="' + acticleId + '"]').parent().next().children('img').attr('src');
+                            
+            //                 if( acticleId ){
+            //                     acticles.push( acticleId );
+            //                 }
+            //                 //如果第一个的值为undefined，说明是全选，所以需要排除全选键
+            //                 if( imageUrl ){
+            //                     imageUrls.push( imageUrl.split('/img/thumbnail/')[1] );
+            //                 }
+            //             })
+            //         }
+
+            //         this.delete( event,element,catalogId,acticles,imageUrls,curr )
+            //     },
+            //     edit: function( event,element ){
+            //         let catalogId = $('.nav-side .catalog.side-second-level-active').attr('name');
+
+            //         let acticleId = $( event.target ).attr('name');
+            //         // 获取当前页数
+            //         let curr = $('#article-page .paging .laypage_curr').html();
+
+            //         let data = {
+            //             acticleId: acticleId
+            //         }
+            //         Command.postAjax( this.acticleUrl,data )
+            //             .done(function( data ){
+            //                 NProgress.done();
+            //                 let catalogs = data[0];
+            //                 let acticle = data[1][0];
+
+            //                 let html = ejs.render( $('#article-update').html(), { catalogs: catalogs,acticle: acticle } )
+            //                 $('.main').html( html );
+                            
+            //                 $('.main #article-edit select option[name="' + catalogId + '"]').attr('selected','selected')
+
+            //                 UE.delEditor('editor');
+            //                 let ue = UE.getEditor('editor',{
+            //                     initialFrameWidth: null// 随屏幕大小自适应 
+            //                 });
+
+            //                 ue.addListener("ready", function () {
+            //                     // editor准备好之后才可以使用
+            //                     ue.setContent( acticle.content );
+            //                 });
+
+            //                 // 如果文章置顶
+            //                 if( acticle.stickyPost ){
+                                
+            //                     $('.main #article-edit #sticky').addClass('switch-on');
+            //                 }else{
+                                
+            //                     $('.main #article-edit #sticky').addClass('switch-off');                                
+            //                 }
+
+            //                 // 如果文章公开
+            //                 if( acticle.lastest ){
+            //                     $('.main #article-edit #lastest').addClass('switch-on');
+            //                 }else{
+            //                     $('.main #article-edit #lastest').addClass('switch-off');                                
+            //                 }
+
+            //                 Switch.init();
+            //             })
+
+            //     },
+            //     confrimEdit: function( event,element ){
+            //         let that = this;
+            //         let acticleId = $( '.main ' + element + ' input[name="acticleId"]' ).val();
+            //         let catalogId = $( '.main ' + element + ' select option:selected' ).attr('name');
+            //         let title = $( '.main ' + element + ' input[name="title"]').val();
+            //         let outline = UE.getEditor('editor').getContentTxt().slice(0,100);
+            //         let content = UE.getEditor('editor').getContent();
+            //         let sticky = $( '.main ' + element + ' #sticky').hasClass('switch-on');
+            //         let lastest = $( '.main ' + element + ' #lastest').hasClass('switch-on');
+
+            //         // 文章不能为空
+            //         if( !title || !UE.getEditor('editor').hasContents() ){
+            //             return Command.showReminder( element,null,'warn','发布文章失败，请重新检查！');
+            //         }
+
+            //         let acticle = {
+            //             acticleId: acticleId,
+            //             superior: catalogId,
+            //             title: title,
+            //             outline: outline,
+            //             content: content,
+            //             stickyPost: sticky,
+            //             lastest: lastest
+            //         }
+
+            //         Command.postAjax( this.editUrl,acticle )
+            //             .done(function(data){
+            //                 NProgress.done();
+            //                 Command.clearEdit( element )
+            //                 Command.showReminder( element,null,null,'文章修改成功');
+            //             })
+            //     },
+            //     laypage: function( first,curr,pages,catalogId ){
+            //         laypage({
+            //                 cont: $('#article-page .paging'), 
+            //                 curr: curr,
+            //                 pages: pages, 
+            //                 groups: 3, 
+            //                 skin: '#4C3B2F', 
+            //                 // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+            //                 jump: function( data ){
+            //                     // 如果是首次加载并且当前页为第一页
+            //                     if( first && (data.curr === 1) ){
+            //                         first = false;
+            //                         return;
+            //                     }
+            //                     let url = '/backstage.html/nav_article/?catalogId=' + catalogId + '&curr=' + data.curr;
+            //                     Command.getAjax( url )
+            //                         .done(function(data){
+            //                             NProgress.done();
+            //                             // 动态生成下一页的内容
+            //                             let html = Acticle.create(data[1]);
+            //                             $('.main #article-page table tbody').html( html )
+            //                         })
+            //                 }
+            //         })
+            //     }
+            // }
+            // // 图片管理
+            // let Album = {
+            //     element: '#album-page',
+            //     curr: 1,
+            //     limit: 12,
+            //     create: function( albums ){
+            //         let html = '';
+            //         albums.forEach(function( album ){
+            //             html += '<div class="albums-img">';
+            //             html += '   <div class="albums-img-preview" style="background-image: url(/img/ueditor/' + album +')"></div>';
+            //             html += '</div>';
+            //         })
+            //         return html;
+            //     },
+            //     laypage: function( first,curr,pages,list ){
+            //         laypage({
+            //                 cont: $('.main #album-page .paging'), 
+            //                 curr: curr,
+            //                 pages: pages, 
+            //                 groups: 3, 
+            //                 skin: '#4C3B2F', 
+            //                 // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+            //                 jump: function( data ){
+                                
+            //                     // 如果是首次加载并且当前页为第一页
+            //                     if( first && (data.curr === 1) ){
+            //                         first = false;
+            //                         return;
+            //                     }
+            //                     let start = (data.curr-1) * Album.limit;
+            //                     let end = (data.curr-1) * Album.limit + Album.limit;
+            //                     let albums = list.slice( start,end );
+            //                     let html = Album.create( albums );
+            //                     $('.main #album-page .main-body').html( html );
+
+            //                 }
+            //         })
+            //     }
+            // }
+
+            // 获取数据
+            // let getData = {
+            //     // 首页
+            //     home: function(){
+            //         Command.getAjax( '/backstage.html/nav_home' )
+            //             .done( function( data ){
+            //                 NProgress.done();
+            //                 let html = ejs.render( $('#home').html(), {acticles: data[0], updateNumber: data[1], readingNumber: data[2] } );
+            //                 $('.main').html(html)
+            //             })
+            //     },
+            //     // 目录管理
+            //     catalog: function(){
+            //         Command.getAjax( '/backstage.html/nav_catalog' )
+            //             .done( function( data ){
+            //                 NProgress.done();
+
+            //                 let catalogName = data[0];
+            //                 let catalogNumber = data[1];
+
+            //                 for( let i in catalogName ){
+            //                     for( let j in catalogNumber ){
+            //                         if( catalogName[i]._id == catalogNumber[j]._id ){
+            //                             catalogName[i].sum = catalogNumber[j].num_tutorial
+            //                         }
+            //                     }
+            //                 }
+            //                 let html = ejs.render( $('#catalog').html(), { total: catalogName.length, catalogs: catalogName } );
+            //                 $('.main').html(html)
+            //             })
+            //     },
+            //     // 文章管理
+            //     article: function(catalogId){
+            //         Command.getAjax( '/backstage.html/nav_article/?catalogId=' + catalogId )
+            //             .done(function( data ){
+            //                 NProgress.done();
+            //                 // 判断是否为第一次加载
+            //                 let first = true;
+            //                 let html = ejs.render( $('#article').html(), { total: data[0],acticles: data[1]} );
+            //                 $('.main').html(html);
+            //                 let curr = Acticle.curr;
+            //                 let pages = Math.ceil(data[0]/Acticle.limit);
+            //                 // 初次加载，给分页绑定事件，当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+            //                 Acticle.laypage( first,curr,pages,catalogId )
+            //             })
+            //     },
+            //     // 判断是否为文章管理
+            //     articleRegExp: function(hash){
+            //         let reg = /article_/i;
+            //         return hash.match( reg );
+            //     },
+            //     // 相册管理：缩略图片管理
+            //     album: function(){
+            //         $.ajax({
+            //             type: 'get',
+            //             url: '/js/ueditor/ue?action=listimage',
+            //             beforeSend: function(){
+            //                 NProgress.start();
+            //             }
+            //         }).done(function(data){
+            //             console.log( data )
+            //             NProgress.done();
+            //             let pages = Math.ceil(data.total/Album.limit)                    
+            //             let start = (Album.curr-1) * Album.limit;
+            //             let end = (Album.curr-1) * Album.limit + Album.limit;
+            //             let albums = data.list.slice( start,end );
+            //             let html = ejs.render( $('#album').html(), {albums: albums,total: data.total});
+            //             $('.main').html( html );
+
+            //             let first = true;
+            //             Album.laypage( first,Album.curr,pages,data.list );
+            //         })
+            //     },
+            //     // 发布文章
+            //     public: function(){
+            //         Command.getAjax( '/backstage.html/nav_public' )
+            //             .done( function( data ){
+            //                 NProgress.done();
+            //                 let html = ejs.render( $('#public').html(), { catalogs: data } );
+            //                 $('.main').html(html)
+            //                 // ueditor编辑器:因为ajax不能重复加载editor,所以在加载前先销毁editor
+            //                 UE.delEditor('editor');
+            //                 let ue = UE.getEditor('editor',{
+            //                     initialFrameWidth: null// 随屏幕大小自适应 
+            //                 });
+            //                 // 初始化开关按钮
+            //                 Switch.init();
+            //                 // 初始化文件上传
+            //                 $('.dropify').dropify();
+            //             })
+            //     },
+            //     accountsModify: function(){
+            //         NProgress.start();
+            //         let html = ejs.render( $('#accounts-modify').html() );
+            //         setTimeout(function(){
+            //             NProgress.done();
+            //             $('.main').html(html);
+            //         },200)
+            //     },
+            //     accountsList: function(){
+            //         Command.getAjax( '/backstage.html/nav_accounts/administrator_list' )
+            //             .done(function(data){
+            //                 NProgress.done();
+            //                 let html = ejs.render( $('#accounts-list').html(),{ total: data[0], administrators: data[1] });
+            //                 $('.main').html( html );
+            //             })
+            //     }
+            // }
+
+
+            // 当页面刷新，令其留在当前页面（因为a链接不是负责跳转页面，页面由ajax生成，如果不做处理的话刷新会直接跳回初始页面）
+            // var hash = window.location.hash.split('#')[1];
+            // if( hash === '' ){// 判断是否为初次加载
+            //     $('.nav-side .nav-home').parent('.side-first-level').addClass('side-first-level-active');                
+            //     getData.home();
+            // }else if( getData.articleRegExp(hash) ){// 判断是否为文章管理
+            //     $('.catalog').each(function(index,data){
+            //         let name = hash.split('article_')[1];
+            //         if( $(data).html() === name ){
+            //             var catalogId = $(this).attr('name');
+            //             getData.article(catalogId);
+            //         }
+            //     })
+            // }else{
+            //     getData[hash]();
+            // }
+
+            // 再次加载时判断当前所在页面并且给相应的侧边栏添加active样式
+            // $('.nav-side .side-first-level a').each(function(index,data){
+            //     if( $(data).attr('href').split('#')[1] === hash ){
+            //         console.log( this );
+            //         $('.nav-side ul li.side-first-level-active').removeClass('side-first-level-active');
+            //         // 如果他的父级存在side-second-level说明他是一个二级菜单，展开这个菜单
+            //         if( $(this).parents().hasClass('side-second-level') ){
+            //             $(this).addClass('side-second-level-active');
+            //             $(this).parents(".side-second-level").delay(0).slideDown(300);
+            //         }                        
+            //     }
+            //     $(this).parents('.side-first-level').addClass('side-first-level-active');
+            // })
+                // let hash = window.location.hash;
+                // hash = hash !== '' ? hash.split('#')[1] : '';
+                // console.log( hash )
+
+            
+            // if ( hash === '' ){// 首次加载页面
+            //     a.home();
+            // }else if( hash === '#home' ){// 再次加载页面
+            //     a.home();
+            // }else if( hash === '#catalog' ){// 目录管理
+            //     a.catalog();
+            // }else if( a.articleRegExp(hash) ){// 文章管理
+            //     console.log( hash );
+            //     var name = hash.split('article_')[1];
+            //     console.log( name );
+            //     $('.catalog').each(function(index,data){
+            //         // console.log( index,data );
+            //         if( $(data).html() === name ){
+            //             var catalogId = $(this).attr('name');
+            //             a.article(catalogId);
+            //             console.log( catalogId )
+            //         }
+                    
+            //     })
+                
+            //     // $()
+            //     // a.catalog();
+            // }else if( hash === '#album' ){// 图片管理
+            //     a.album();
+            // }else if( hash === '#public' ){// 发布文章
+            //     a.public();
+            // }else if( hash === '#comment' ){// 评论管理
+                
+            // }else if( hash === '#accountsModify' ){// 修改密码
+            //     a.accountsModify();
+            // }else if( hash === '#accountsList' ){// 管理员列表
+            //     a.accountsList();
+            // }
+
+            
+            // let hash = window.location.hash;
+            // hash = hash !== '' ? hash.split('#')[1] : '';
+            // $('.nav-side .nav-home').parent('.side-first-level').addClass('side-first-level-active');
+
+            // $('.nav-side .side-first-level a').each(function(index,data){
+            //     console.log($(data).attr('href').split('#')[1])
+            //     if( $(data).attr('href').split('#')[1] === hash ){
+            //         $('.nav-side ul li.side-first-level-active').removeClass('side-first-level-active');
+            //         // 如果他的父级存在side-second-level说明他是一个二级菜单，展开这个菜单
+            //         if( $(this).parents().hasClass('side-second-level') ){
+            //             $(this).addClass('side-second-level-active');
+            //             $(this).parents(".side-second-level").delay(0).slideDown(300);
+            //         }                        
+            //     }
+            //     $(this).parents('.side-first-level').addClass('side-first-level-active');
+            // });
+
+            // if( hash === ''  ){
+            //     $('.nav-side .nav-home').parent('.side-first-level').addClass('side-first-level-active');
+            // }else{
+            //     console.log( hash )
+            //     $('.nav-side .side-first-level a').each(function(index,data){
+            //         console.log($(data).attr('href').split('#')[1])
+            //         if( $(data).attr('href').split('#')[1] === hash ){
+            //             console.log( this )
+            //             $('.nav-side ul li.side-first-level-active').removeClass('side-first-level-active');
+            //             // 如果他的父级存在side-second-level说明他是一个二级菜单，展开这个菜单
+            //             if( $(this).parents().hasClass('side-second-level') ){
+            //                 $(this).addClass('side-second-level-active');
+            //                 $(this).parents(".side-second-level").delay(0).slideDown(300);
+            //             }
+            //             $(this).parents('.side-first-level').addClass('side-first-level-active');
+            //         }
+            //     });
+            // }
+        })
+    </script>
 </head>
-
 <body>
     <div class="page">
         <!--遮罩层-->
@@ -55,16 +785,15 @@
                     <p class="explain">博客后台管理系统</p>
                 </li>
 
-
-                <li class="side-first-level first-top side-first-level-active">
-                    <a href="javascript:;" class="nav-home">
+                <li class="side-first-level first-top">
+                    <a href="#home" class="nav-home">
                         <i class="nav-icon nav-home-icon"></i>
                         <span>首页</span>
                     </a>
                 </li>
 
                 <li class="side-first-level">
-                    <a href="javascript:;" class="nav-catalog">
+                    <a href="#catalog" class="nav-catalog">
                         <i class="nav-icon nav-catalog-icon"></i>
                         <span>目录管理</span>
                     </a>
@@ -78,26 +807,24 @@
                     </a>
                     <ul class="side-second-level">
                         <$ catalogs.forEach(function( data ){ $>
-                            <li><a name="<$= data._id $>" class="catalog" href="javascript:;"><$= data.catalogName $></a></li>
+                            <li><a name="<$= data._id $>" class="catalog" href="#article_<$= data.catalogName $>"><$= data.catalogName $></a></li>
                         <$ }) $>
                     </ul>
                 </li>
                 <li class="side-first-level">
-
-                    <a href="javascript:;" class="nav-album">
+                    <a href="#album" class="nav-album">
                         <i class="nav-icon nav-album-icon"></i>
                         <span>图片管理</span>
                     </a>
                 </li>
                 <li class="side-first-level">
-
-                    <a href="javascript:;" class="nav-public">
+                    <a href="#public" class="nav-public">
                         <i class="nav-icon nav-public-icon"></i>
                         <span>发布文章</span>
                     </a>
                 </li>
                 <li class="side-first-level">
-                    <a href="javascript:;" class="nav-comment">
+                    <a href="#comment" class="nav-comment">
                         <i class="nav-icon nav-comment-icon"></i>
                         <span>评论管理</span>
                     </a>
@@ -109,8 +836,8 @@
                         <span class="drop-image"></span>
                     </a>
                     <ul class="side-second-level">
-                        <li><a class="accounts-modify" href="javascript:;">修改密码</a></li>
-                        <li><a class="accounts-list" href="javascript:;">管理员列表</a></li>
+                        <li><a class="accounts-modify" href="#accountsModify">修改密码</a></li>
+                        <li><a class="accounts-list" href="#accountsList">管理员列表</a></li>
                     </ul>
                 </li>
                 <!--<li class="side-first-level">
@@ -160,43 +887,8 @@
                 </nav>
             </div>
             <!--row结束-->
-
-            
             <div class="row main">
-                <!--home-page开始-->
-                <div id="home-page">
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 ">
-                        <div class="statistical">
-                            <div class="statistical-list">
-                                <p class="statistical-list-header">总文章数量</p>
-                                <div class="statistical-list-body">
-                                    <p>共<strong><$= acticles $></strong>遍</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div class="statistical">
-                            <div class="statistical-list">
-                                <p class="statistical-list-header">最近更新文章数量</p>
-                                <div class="statistical-list-body">
-                                    <p>共<strong><$= updateNumber $></strong>遍</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div class="statistical">
-                            <div class="statistical-list">
-                                <p class="statistical-list-header">总阅读人次</p>
-                                <div class="statistical-list-body">
-                                    <p>共<strong><$= readingNumber $></strong>次</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+                
             </div>
             <!--row结束-->
         </div>

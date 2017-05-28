@@ -390,5 +390,6 @@ a:link,a:hover {
     .acticle {
         padding: 0 20px;
         font-size: 12px;
+        font-weight: 700;
     }
 }

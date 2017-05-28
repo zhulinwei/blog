@@ -1,6 +1,7 @@
 // 将bootstrap样式引入js模块中
 require('../css/laypage.css');
 require('../css/backstage.css');
+require("script-loader!./common.js");
 require("script-loader!./plugs/laypage.js");
 require("script-loader!./plugs/ejs.min.js");
 require("script-loader!./plugs/nprogress.js");
@@ -38,7 +39,6 @@ $(function(){
 
     // 一级菜单被点击时，切换背景并判断是否展开二级菜单
     $('.nav-side ul li').click(function( event ){
-        
         if( !$( event.target ).hasClass('catalog') ){// 这个if，实在是迫于无奈之举啊
             $('.nav-side ul li.side-first-level-active').removeClass('side-first-level-active');
             // 先收缩所有的二级菜单
@@ -64,7 +64,6 @@ $(function(){
         }
         $('.side-first-level .side-second-level li a').removeClass('side-second-level-active');
         $(this).addClass('side-second-level-active');
-        
     })
 
     // blog中的公共函数
@@ -374,124 +373,183 @@ $(function(){
             })
             
         }
-    }
+    };
 
-    // 首页
-    $('.nav-side .nav-home').click(function(){
-        Command.getAjax( '/backstage.html/nav_home' )
-            .done( function( data ){
-                NProgress.done();
+    // 获取数据
+    let getData = {
+        // 首页
+        home: function(){
+            Command.getAjax( '/backstage.html/nav_home' )
+                .done( function( data ){
+                    NProgress.done();
+                    let html = ejs.render( $('#home').html(), {acticles: data[0], updateNumber: data[1], readingNumber: data[2] } );
+                    $('.main').html(html)
+                })
+        },
+        // 目录管理
+        catalog: function(){
+            Command.getAjax( '/backstage.html/nav_catalog' )
+                .done( function( data ){
+                    NProgress.done();
 
-                let html = ejs.render( $('#home').html(), {acticles: data[0], updateNumber: data[1], readingNumber: data[2] } );
-                $('.main').html(html)
-                
-            })
-    })
-    
-    // 目录管理
-    $('.nav-side .nav-catalog').click(function(){
-        Command.getAjax( '/backstage.html/nav_catalog' )
-            .done( function( data ){
-                NProgress.done();
+                    let catalogName = data[0];
+                    let catalogNumber = data[1];
 
-                let catalogName = data[0];
-                let catalogNumber = data[1];
-
-                for( let i in catalogName ){
-                    for( let j in catalogNumber ){
-                        if( catalogName[i]._id == catalogNumber[j]._id ){
-                            catalogName[i].sum = catalogNumber[j].num_tutorial
+                    for( let i in catalogName ){
+                        for( let j in catalogNumber ){
+                            if( catalogName[i]._id == catalogNumber[j]._id ){
+                                catalogName[i].sum = catalogNumber[j].num_tutorial
+                            }
                         }
                     }
+                    let html = ejs.render( $('#catalog').html(), { total: catalogName.length, catalogs: catalogName } );
+                    $('.main').html(html)
+                })
+        },
+        // 文章管理
+        article: function(catalogId){
+            Command.getAjax( '/backstage.html/nav_article/?catalogId=' + catalogId )
+                .done(function( data ){
+                    NProgress.done();
+                    // 判断是否为第一次加载
+                    let first = true;
+                    let html = ejs.render( $('#article').html(), { total: data[0],acticles: data[1]} );
+                    $('.main').html(html);
+                    let curr = Acticle.curr;
+                    let pages = Math.ceil(data[0]/Acticle.limit);
+                    // 初次加载，给分页绑定事件，当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                    Acticle.laypage( first,curr,pages,catalogId )
+                })
+        },
+        // 判断是否为文章管理
+        articleRegExp: function(hash){
+            let reg = /article_/i;
+            return hash.match( reg );
+        },
+        // 相册管理：缩略图片管理
+        album: function(){
+            $.ajax({
+                type: 'get',
+                url: '/js/ueditor/ue?action=listimage',
+                beforeSend: function(){
+                    NProgress.start();
                 }
-                let html = ejs.render( $('#catalog').html(), { total: catalogName.length, catalogs: catalogName } );
-                $('.main').html(html)
-            })
-    })
-
-    // 文章管理
-    $('.nav-side .side-first-level .side-second-level').on('click', 'li .catalog' , function(event){
-
-        let catalogId = $( event.target ).attr('name');
-        
-        Command.getAjax( '/backstage.html/nav_article/?catalogId=' + catalogId )
-            .done(function( data ){
+            }).done(function(data){
                 NProgress.done();
-                // 判断是否为第一次加载
+                let pages = Math.ceil(data.total/Album.limit)                    
+                let start = (Album.curr-1) * Album.limit;
+                let end = (Album.curr-1) * Album.limit + Album.limit;
+                let albums = data.list.slice( start,end );
+                let html = ejs.render( $('#album').html(), {albums: albums,total: data.total});
+                $('.main').html( html );
+
                 let first = true;
-                let html = ejs.render( $('#article').html(), { total: data[0],acticles: data[1]} );
-                $('.main').html(html);
-
-                let curr = Acticle.curr;
-                let pages = Math.ceil(data[0]/Acticle.limit);
-                // 初次加载，给分页绑定事件，当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
-                Acticle.laypage( first,curr,pages,catalogId )
+                Album.laypage( first,Album.curr,pages,data.list );
             })
-    })
-
-    // 发布文章
-    $('.nav-side .nav-public').click(function(){
-        Command.getAjax( '/backstage.html/nav_public' )
-            .done( function( data ){
+        },
+        // 发布文章
+        public: function(){
+            Command.getAjax( '/backstage.html/nav_public' )
+                .done( function( data ){
+                    NProgress.done();
+                    let html = ejs.render( $('#public').html(), { catalogs: data } );
+                    $('.main').html(html)
+                    // ueditor编辑器:因为ajax不能重复加载editor,所以在加载前先销毁editor
+                    UE.delEditor('editor');
+                    let ue = UE.getEditor('editor',{
+                        initialFrameWidth: null// 随屏幕大小自适应 
+                    });
+                    // 初始化开关按钮
+                    Switch.init();
+                    // 初始化文件上传
+                    $('.dropify').dropify();
+                })
+        },
+        comment: function(){
+            console.log('这里是评论管理');
+        },
+        accountsModify: function(){
+            NProgress.start();
+            let html = ejs.render( $('#accounts-modify').html() );
+            setTimeout(function(){
                 NProgress.done();
-                let html = ejs.render( $('#public').html(), { catalogs: data } );
-            
-                $('.main').html(html)
-                // ueditor编辑器:因为ajax不能重复加载editor,所以在加载前先销毁editor
-                UE.delEditor('editor');
-                let ue = UE.getEditor('editor',{
-                    initialFrameWidth: null// 随屏幕大小自适应 
-                });
-                // 初始化开关按钮
-                Switch.init();
-                // 初始化文件上传
-                $('.dropify').dropify();
-            })
-    })
+                $('.main').html(html);
+            },200)
+        },
+        accountsList: function(){
+            Command.getAjax( '/backstage.html/nav_accounts/administrator_list' )
+                .done(function(data){
+                    NProgress.done();
+                    let html = ejs.render( $('#accounts-list').html(),{ total: data[0], administrators: data[1] });
+                    $('.main').html( html );
+                })
+        }
+    };
 
-    // 相册管理：缩略图片管理
-    $('.nav-side .nav-album').click(function( event ){
-        $.ajax({
-            type: 'get',
-            url: '/js/ueditor/ue?action=listimage',
-            beforeSend: function(){
-                NProgress.start();
+    // 当页面刷新，令其留在当前页面（页面由ajax生成，如果不做处理的话刷新会直接跳回初始页面）
+    let hash = window.location.hash;
+    // 如果hash为空代表为首次加载，则令其加载首页数据
+    hash = hash !== '' ? hash.split('#')[1] : 'home';
+    if( getData.articleRegExp(hash) ){// 判断是否为文章管理
+        $('.catalog').each(function(index,data){
+            let name = hash.split('article_')[1];
+            if( $(data).html() === name ){
+                var catalogId = $(this).attr('name');
+                getData.article(catalogId);
             }
-        }).done(function(data){
-            console.log( data )
-            NProgress.done();
-
-            let pages = Math.ceil(data.total/Album.limit)                    
-            let start = (Album.curr-1) * Album.limit;
-            let end = (Album.curr-1) * Album.limit + Album.limit;
-            let albums = data.list.slice( start,end );
-            let html = ejs.render( $('#album').html(), {albums: albums,total: data.total});
-            $('.main').html( html );
-
-            let first = true;
-            Album.laypage( first,Album.curr,pages,data.list );
         })
-    })
+    }else{
+        getData[hash]();
+    }
 
-    // 帐号管理：帐号修改
-    $('.nav-side .accounts-modify').click(function( event ){
-        NProgress.start();
-        let html = ejs.render( $('#accounts-modify').html() );
-        setTimeout(function(){
-            NProgress.done();
-            $('.main').html(html);
-        },200)
+    // 给对应的侧边栏添加active样式
+    $('.nav-side .side-first-level a').each(function(index,data){
+        if( $(data).attr('href').split('#')[1] === hash ){
+            $('.nav-side ul li.side-first-level-active').removeClass('side-first-level-active');
+            // 如果他的父级存在side-second-level说明他是一个二级菜单，展开这个菜单
+            if( $(this).parents().hasClass('side-second-level') ){
+                $(this).addClass('side-second-level-active');
+                $(this).parents(".side-second-level").delay(0).slideDown(300);
+            }
+            $(this).parents('.side-first-level').addClass('side-first-level-active');
+        }
+    });
+
+     // 点击事件：首页
+    $('.nav-side .nav-home').click(function(){
+        getData.home();
+    });
+    
+    // 点击事件：目录管理
+    $('.nav-side .nav-catalog').click(function(){
+        getData.catalog();
+    });
+
+    // 点击事件：文章管理
+    $('.nav-side .side-first-level .side-second-level').on('click', 'li .catalog' , function(event){
+        let catalogId = $( event.target ).attr('name');
+        getData.article(catalogId);
+    });
+
+    // 点击事件：相册管理
+    $('.nav-side .nav-album').click(function(){
+        getData.album();
+    });
+
+    // 点击事件：发布文章
+    $('.nav-side .nav-public').click(function(){
+        getData.public();
+    });
+
+    // 点击事件：帐号修改
+    $('.nav-side .accounts-modify').click(function(){
+        getData.accountsModify();
     });
 
     // 帐号管理： 管理员列表
     $('.nav-side .accounts-list').click(function(){
-        Command.getAjax( '/backstage.html/nav_accounts/administrator_list' )
-            .done(function(data){
-                NProgress.done();
-                let html = ejs.render( $('#accounts-list').html(),{ total: data[0], administrators: data[1] });
-                $('.main').html( html );
-            })
-    })
+        getData.accountsList();
+    });
 
     // 目录管理
     let Catalog = {
@@ -660,8 +718,6 @@ $(function(){
             // 删除所选文章并更新该页内容，所该页已经不存在内容的情况下，获取上一页的内容
             Command.postAjax( this.deleteUrl,data )
                 .done(function(data){
-                    console.log( data );
-
                     if(data[1].length === 0){
                         $('.main #article-page table tbody').remove();
                     }else{
@@ -819,7 +875,7 @@ $(function(){
                     }
             })
         }
-    }
+    };
 
     // 图片管理
     let Album = {
@@ -859,7 +915,7 @@ $(function(){
                     }
             })
         }
-    }
+    };
 
     // 发布文章
     let Public = {
@@ -938,7 +994,7 @@ $(function(){
                     }
                 })
         }
-    }
+    };
 
     // 帐号管理
     let Account = {
@@ -1211,29 +1267,7 @@ $(function(){
                 break;
         }
         
-    })
-
-    // // 相册管理：缩略图片管理
-    // $('.nav-side .nav-album').click(function( event ){
-    //     $.ajax({
-    //         type: 'get',
-    //         url: '/js/ueditor/ue?action=listimage',
-    //         beforeSend: function(){
-    //             NProgress.start();
-    //         }
-    //     }).done(function(data){
-    //         NProgress.done();
-    //         let pages = Math.ceil(data.total/Album.limit)                    
-    //         let start = (Album.curr-1) * Album.limit;
-    //         let end = (Album.curr-1) * Album.limit + Album.limit;
-    //         let albums = data.list.slice( start,end );
-    //         let html = ejs.render( $('#album').html(), {albums: albums,total: data.total});
-    //         $('.main').html( html );
-
-    //         let first = true;
-    //         Album.laypage( first,Album.curr,pages,data.list );
-    //     })
-    // })
+    });
 
     // 发布文章
     $('.main').on('click', Public.element, function( event ){
@@ -1255,7 +1289,7 @@ $(function(){
                 break;
                 
         }
-    })
+    });
 
     // 帐号管理：修改密码
     $('.main').on('click', Account.element.modify , function(event){

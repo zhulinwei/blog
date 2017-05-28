@@ -138,9 +138,10 @@ let getField = ( model,options,fields,skip,limit,reorder ) => {
 
 // 展示后台首页
 let showIndex = (req, res, next) => {
-    return Promise.all([getNews(), getActicles(), getUpdateNumber(), getReadNUmber(), getField( Catalog,null,'catalogName' )])
+    // return Promise.all([getNews(), getActicles(), getUpdateNumber(), getReadNUmber(), getField( Catalog,null,'catalogName' )])
+    return Promise.all([getNews(), getField( Catalog,null,'catalogName' )])
         .then((data) => {
-            res.render('backstage/backstage.html', { news: data[0], acticles: data[1], updateNumber: data[2], readingNumber: data[3], catalogs: data[4] });
+            res.render('backstage/backstage.html', { news: data[0], catalogs: data[1] });
         })
         .catch((error) => {
             return Promise.reject(error);

@@ -11,17 +11,15 @@ let Backstage = require('../controllers/backstage.js');
 
 // 博客首页
 router.get('/blog.html', Blog.showBlog);
-// router.get('/blog.html/nextActicles', function(){
-//     console.log('asdfasdf');
-// });
 router.get('/blog.html/nextActicles', Blog.nextActicles);
 
 // 后台登录
 router.get('/login.html', Backstage.login);
 router.post('/login.html/checkpwd', Backstage.checkpwd);
+router.get('/backstage.html',utilFile.checkStatus, Backstage.showIndex)
+
 
 // 后台：首页
-router.get('/backstage.html',utilFile.checkStatus, Backstage.showIndex);
 router.get('/backstage.html/nav_home',utilFile.checkStatus, Backstage.navHome);
 // 后台：目录管理
 router.get('/backstage.html/nav_catalog',utilFile.checkStatus, Backstage.navCatalog);

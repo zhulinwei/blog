@@ -63,7 +63,6 @@ let Blog = {
     }
 }
 
-
 let showBlog = ( req,res,next ) => {
     let query = url.parse( req.url ).query;
     let type = querystring.parse(query).type;
@@ -79,6 +78,8 @@ let showBlog = ( req,res,next ) => {
     if( !type ){
         return Promise.all([Blog.acticle(sticky), Blog.acticle(lastest), Blog.catalogList()])
             .then(function( data ){
+                data[1].forEach( (data) => {
+            })
                 res.render('blog/blog.html', {stickyPosts: data[0][0], lastests: data[1], catalog: data[2]})
             })
             .catch( (error) => {
@@ -114,16 +115,7 @@ let nextActicles = ( req,res,next ) => {
         .catch( (error) => {
             return Promise.reject( error );
         })
-
-    // return getLastest( skip,Blog.limit )
-    //     .then( (data) => {
-    //         res.json(data);
-    //     })
-    //     .catch( (error) => {
-    //         return Promise.reject( error );
-    //     })
 }
-
 
 exports.showBlog = showBlog;
 exports.nextActicles = nextActicles;
