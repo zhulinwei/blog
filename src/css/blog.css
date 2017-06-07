@@ -133,7 +133,6 @@ a:link,a:hover {
     color: #666;
 }
 
-
 /*点号垂直居中*/
 .article-dot {
     position: relative;
@@ -190,9 +189,11 @@ a:link,a:hover {
     -webkit-box-shadow: 0 0 3px 0 #ccc;
     box-shadow: 0 0 3px 0 #333;
 }
+
 .category-title {
     margin-bottom: 10px;
 }
+
 .category-item {
     list-style-type: none;
     padding: 15px 0 15px 0;
@@ -208,6 +209,11 @@ a:link,a:hover {
 }
 
 /*文章详情*/
+.acticle {
+    padding: 0 10px;
+    font-size: 12px;
+}
+
 .acticle header {
     text-align: center;
 }
@@ -219,6 +225,147 @@ a:link,a:hover {
 .acticle acticle img {
     max-width: 100%;
 }
+
+/*评论：flex布局*/
+.comment {
+    padding: 0 5px;
+}
+
+.comment-item {
+    width: 100%;
+    display: flex;
+    display:-webkit-flex;
+    padding-bottom: 5px;
+}
+
+/*用户头像*/
+.comment-item .img-wrapper {
+    flex: 0 0 60px;
+}
+
+.comment-item .img-wrapper img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/*回复按钮：无边框*/
+.comment-item .comment-default {
+    border: none;
+    outline: none;
+    background: #fff;
+}
+
+.comment-item .comment-default:hover {
+    color: #333;
+}
+
+/*回复按钮：有边框*/        
+.comment-item .comment-button {
+    width: 80px;
+    height: 34px;
+    color: #808080;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #808080;
+    background: #fff;
+    float: right;
+    outline: none;
+}
+
+.comment-item .comment-wrapper {
+    width: 100%;
+}
+
+/*评论输入区*/
+.comment-item .comment-editor {
+    border: 1px solid #808080;
+    margin-bottom: 10px;
+    border-radius: 5px;            
+    overflow: hidden;
+}
+
+.comment-item .comment-frame .comment-editor{
+    border: 1px solid #80C0FF;            
+}
+
+.comment-item .comment-editor input {
+    width: 100%;
+    padding: 10px 5px;
+    border: none;
+    outline: none;
+}
+
+/*评论头部*/
+.comment-item .comment-wrapper .comment-header {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.comment-item .comment-wrapper .comment-header .speak-to {
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0 5px;
+}
+
+/*评论内容*/
+.comment-item .comment-wrapper .comment-content {
+    font-size: 15px;
+    line-height: 22px;
+    word-break: break-word;
+}
+
+/*评论底部*/
+.comment-item .comment-wrapper .comment-footer {
+    font-size: 12px;
+    color: #808080;
+}
+
+.comment-reply {
+    padding-bottom: 10px;
+}
+
+.comment-reply .comment-wrapper .comment-footer {
+    display: none;
+}
+
+/*透明层样式*/
+#shadow {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    /*height:200%是为了解决移动端露出来的空白部分*/
+    height: 200%;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 9999;
+}
+
+.reminder {
+    width: 200px;
+    border-radius: 5px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -100px;
+    background-color: #fff;
+    z-index: 9999;
+    text-align: center;
+    display: none;            
+    padding: 20px 0;
+}
+
+.reminder-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 15px;
+}
+
 /*加载中*/
 @-webkit-keyframes line-scale {
     0% {
@@ -354,7 +501,6 @@ a:link,a:hover {
 
 
 @media (max-width: 767px) {
-    
     /*主页页脚*/
     .footer-top {
         font-size: 12px;
@@ -384,12 +530,5 @@ a:link,a:hover {
     .latest-article-img-container-xs {
         width: 100%;
         height: 180px;
-    }
-
-    /*文章详情*/
-    .acticle {
-        padding: 0 20px;
-        font-size: 12px;
-        font-weight: 700;
     }
 }

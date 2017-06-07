@@ -1,0 +1,35 @@
+<style type="text" id="lastest">
+    <ul class="items lastest">
+        <% lastests.forEach(function( data ){ %>
+            <li class="item">
+                <article>
+                    <a href="/blog.html/detail?acticleId=<%= data._id %>">
+                        <div class="latest-article-img-container latest-article-img-container-xs">
+                            <div class="latest-article-img-preview" style="background-image: url('/img/thumbnail/<%= data.thumbnail %>')"></div>
+                        </div>
+                        <section class="article-summary latest-article">
+                            <span class="article-title article-title-xs"><%= data.title %></span>
+                            <p><%= data.outline %> ...<span class="article-read-all">阅读全文 ></span></p>
+                            <div class="pull-right">
+                                <a href="/index.html">
+                                    <strong>Level.Z</strong>
+                                </a>
+                                <!--点号垂直居中vel.Z</a>-->
+                                <span class="article-dot">.</span>
+                                <a href="/blog.html/detail?acticleId=<$= stickyPosts._id $>#comments">
+                                    <strong><%= data.pigeView %></strong>条评论
+                                </a>
+                                <span class="article-dot">.</span>
+                                <time>
+                                    <strong><%= data.meta.createAt %></strong>
+                                </time>
+                                <!--点号垂直居中-->
+                            </div>
+                        </section>
+                    </a>
+                </article>
+            </li>
+        <% }) %>
+    </ul>
+</style>
+    

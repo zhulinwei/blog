@@ -17,6 +17,7 @@
                         <th width="15%">文章标题</th>
                         <th width="5%">文章置顶</th>
                         <th width="5%">文章公开</th>
+                        <th width="5%">评论数量</th>
                         <th width="5%">发布时间</th>
                         <th width="5%">更新时间</th>
                         <th width="5%">编辑管理</th>
@@ -43,6 +44,7 @@
                                 <td><strong>否</strong></td>
                             <% } %>
 
+                            <td><strong><a href="javascript:;" class="pige-view" acticleId="<%= acticle._id %>"><%= acticle.pigeView %></a></strong></td>
                             <td><strong><%= acticle.meta.createAt %></strong></td>
                             <td><strong><%= acticle.meta.updateAt %></strong></td>
                             <td>
@@ -57,7 +59,7 @@
                     <% }) %>
                 </tbody>
             </table>
-            <span class="paging pull-right">1</span>
+            <span class="paging pull-right"></span>
         </div>
     </div>
 </style>

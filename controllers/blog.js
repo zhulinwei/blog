@@ -4,8 +4,10 @@ const url = require('url');
 const moment = require('moment');
 const Promise = require('bluebird');
 const querystring = require('querystring');
-let Acticle = require('../models/acticle.js');
+let User = require('../models/user.js');
 let Catalog = require('../models/catalog.js');
+let Acticle = require('../models/acticle.js');
+let Comment = require('../models/comment.js');
 
 
 let Blog = {
@@ -54,49 +56,85 @@ let Blog = {
                         lastest.meta.createAt = Blog.translate( moment(lastest.meta.createAt).toNow(true) );
                     })
                 }
-                return Promise.resolve( data )
+                return Promise.resolve( data );
             })
             .catch( (error) => {
                 return Promise.reject( error );
             })
-
+    },
+    // 评论获取
+    getComment: (option) => {
+        return Comment.find(option)
+            .populate('from')
+            .populate('to')
+            .lean()
+            .then(function(data){
+                data.forEach( (comment) => {
+                    comment.meta.createAt = Blog.translate( moment(comment.meta.createAt).toNow(true) );
+                })
+                return Promise.resolve( data );
+            })
+            .catch( (error) => {
+                return Promise.reject( error );
+            })
     }
-}
+};
 
-let showBlog = ( req,res,next ) => {
-    let query = url.parse( req.url ).query;
-    let type = querystring.parse(query).type;
-    let Id = querystring.parse(query).Id;
+// 取出置顶文章和目录列表
+let showIndex = ( req,res,next ) => {
     let sticky = {// 置顶文章查询条件
         stickyPost: true
     };
-    let lastest = {// 最新文章查询条件  
-        stickyPost: false,
-        lastest: true
-    }
-    // 不存在type代表初次加载首页
-    if( !type ){
-        return Promise.all([Blog.acticle(sticky), Blog.acticle(lastest), Blog.catalogList()])
-            .then(function( data ){
-                data[1].forEach( (data) => {
-            })
-                res.render('blog/blog.html', {stickyPosts: data[0][0], lastests: data[1], catalog: data[2]})
-            })
-            .catch( (error) => {
-                return Promise.reject( error );
-            })
-    }
-    // 根据type判断是获取对于目录的文章列表还是文章详情
-    let option =  type === 'catalog' ? {superior: Id} : {_id: Id};
-    return Blog.acticle(option)
-        .then( (data) => {
-            if(type === 'catalog'){// 获取对于目录的文章列表
-                res.json( data );
-            }else{// 获取文章详情
-                res.render('blog/acticle.html', { acticle: data[0] });
-            }
+    Promise.all([Blog.acticle(sticky), Blog.catalogList()])
+        .then(function( data ){
+            res.render('blog/blog.html', {stickyPosts: data[0][0], catalog: data[1]})
         })
+        .catch( (error) => {
+            return Promise.reject( error );
+        })
+};
+
+// 取出对应的目录文章
+let showActicles = ( req,res,next ) => {
+    let catalogId = req.query.catalogId;
+    // 不存在catalogId，表明是加载首页；反之加载对应目录的文章
+    let option = !catalogId ? { lastest: true } : { superior: catalogId}
+    Blog.acticle(option)
+        .then((data) => {
+            res.json(data);
+        })
+        .catch( (error) => {
+            return Promise.reject( error );
+        })
+};
+
+
+let detail = ( req,res,next ) => {
+    let query = url.parse( req.url ).query;
+    let acticleId = querystring.parse(query).acticleId;
+    let option = {
+        _id: acticleId
+    };
+    Blog.acticle(option)
+        .then((data) => {
+            res.render('blog/acticle.html', { acticle: data[0] });
+        })
+        .catch( (error) => {
+            return Promise.reject( error );
+        })
+};
+
+// 检查登录状态
+let checkStatus = ( req,res,next ) => {
+    let openId = req.session.openId;
+    if( !openId ){
+        res.json({'code':1003});
+    }else{
+        res.json({'code':1});        
+    }
 }
+
+// 更多文章
 let nextActicles = ( req,res,next ) => {
     var skip,option;
     // 获取下一页文章且无catalogId，代表当前在首页底部
@@ -108,14 +146,79 @@ let nextActicles = ( req,res,next ) => {
         option = {superior: req.query.catalogId};
     }
 
-    return Blog.acticle( option,skip )
+    Blog.acticle( option,skip )
         .then( (data) => {
             res.json(data);
         })
         .catch( (error) => {
             return Promise.reject( error );
         })
+};
+
+// 评论
+let saveComment = ( req,res,next ) => {
+    let option;
+    let acticleId = req.body.acticleId;
+    let fromId = req.body.fromId;
+    let toId = req.body.toId || null;
+    let content = req.body.content;
+    
+    
+    let comment = new Comment({
+        superior: acticleId,
+        from: fromId,
+        to: toId,
+        content: content
+    })
+
+    comment.save()
+        .then((data) => {
+            let option = {
+                _id: data._id
+            }
+            return Acticle.update({
+                _id: data.superior
+            },{
+                $inc:{
+                    pigeView: 1
+                }
+            })
+        })
+        .then((data) => {
+            return Blog.getComment(option);
+        })
+        .then((data) => {
+            res.json( data );
+        })
 }
 
-exports.showBlog = showBlog;
+
+// 获取评论
+let showComment = ( req,res,next ) => {
+    let currentUser;
+    // 判断是否已经登录
+    if( req.session.openId ){
+        currentUser = new Object();
+        currentUser.openId = req.session.openId;
+        currentUser.nickName = req.session.nickName;
+        currentUser.thumbnail = req.session.thumbnail;
+    }else{
+        currentUser = null;
+    }
+
+    let option = { 
+        superior: req.query.acticleId
+    };
+    Blog.getComment(option)
+        .then( (data) => {
+            res.json({ comments: data, currentUser: currentUser });
+        })
+};
+
+exports.detail = detail;
+exports.showIndex = showIndex;
+exports.showActicles = showActicles;
 exports.nextActicles = nextActicles;
+exports.checkStatus = checkStatus;
+exports.saveComment = saveComment;
+exports.showComment = showComment;

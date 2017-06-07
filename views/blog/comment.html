@@ -1,0 +1,59 @@
+<style type="text" id="comments">
+    <div class="block-title block-title-xs">
+        <p><span class="total"><%= length %></span>条评论</p>
+    </div>
+
+    <div class="comment-item comment-reply">
+        <% if( currentUser ){ %>
+            <div class="img-wrapper">
+                <img class="current-user" src="<%= currentUser.thumbnail %>" alt="" openId="<%= currentUser.openId %>" nickName = "<%= currentUser.nickName %>">
+            </div>
+            <div class="comment-wrapper">
+                <div class="comment-editor">
+                    <input type="text" placeholder="写下你的回复" class="comment-input" />
+                </div>
+                <div class="comment-footer">
+                    <button class="comment-button">评论</button>
+                </div>
+            </div>
+        <% }else{ %>
+            <div class="img-wrapper">
+                <img src="/img/da8e974dc_l.jpg" alt="">
+            </div>
+            <div class="comment-wrapper">
+                <div class="comment-editor">
+                    <input type="text" placeholder="写下你的回复">
+                </div>
+                <div class="comment-footer">
+                    <button class="comment-button">评论</button>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <% comments.forEach(function( data ){ %>
+        <div class="comment-item comment-show">
+            <div class="img-wrapper">
+                <img class="from-user" src="<%= data.from.thumbnail %>" alt="">
+            </div>
+            <div class="comment-wrapper">
+                <div class="comment-header">
+                    <p>
+                        <%= data.from.nickName %>
+                        <% if(data.to){ %>
+                            <span class="speak-to">回复</span>
+                            <%= data.to.nickName %>
+                        <% } %>
+                    </p>
+                </div>
+                <div class="comment-content">
+                    <p><%- data.content %></p>
+                </div>
+                <div class="comment-footer">
+                    <p><span class="comment-time"><%= data.meta.createAt %></span><button class="comment-default comment-answer" openId="<%= data.from._id %>">回复</button></p>
+                </div>
+                <div class="comment-item comment-frame"></div>
+            </div>
+        </div>
+    <% }) %>
+</style>

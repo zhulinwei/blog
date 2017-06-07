@@ -13,7 +13,8 @@
     <script src="/js/vender.js"></script>
     <script src="/js/blog.js"></script>
 </head>
-<body>
+<!--不允许选中和右键-->
+<body oncontextmenu="return false" onselectstart="return false">
     <nav class="navbar navbar-default navbar-fixed-top" id="header">
         <div class="container">
             <div class="navbar-header">
@@ -39,6 +40,16 @@
     </nav>
 
     <div class="container main main-xs">
+        <div id="shadow"></div>
+        <div class="reminder">
+            <p>点击图标授权登录</p>
+            <a href="javascript:;">
+                <img src="/img/close.jpg" alt="" class="reminder-close">
+            </a>
+            <a class="connectQq" href="https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=101405670&redirect_uri=https://www.51linwei.top/redirect.html">
+                <img src="/img/9e65e341257519909580bdaf7b411d18.png" alt="" width="80px">
+            </a>
+        </div>
         <div class="row acticle">
             <header>
                 <h2><$= acticle.title $></h2> 
@@ -48,6 +59,12 @@
                 <$- acticle.content $>
             </acticle>
         </div>
+
+        <div class="row comment">
+            
+        </div>
     </div>
+    
+    <$- include('./comment.html') $>
 </body>
 </html>

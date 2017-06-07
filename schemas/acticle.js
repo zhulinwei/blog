@@ -16,6 +16,10 @@ let ActicleSchema = new mongoose.Schema({
     content: String,
     stickyPost: Boolean,// 是否置顶
     lastest: Boolean,// 是否更新至最新文章
+    pigeView: {
+        type: Number,
+        default: 0
+    },
     meta: {
         createAt: {
             type: Number,

@@ -12,11 +12,6 @@ require("script-loader!./plugs/dropify.js");
 require("script-loader!./plugs/masonry.pkgd.js");
 
 $(function(){
-    NProgress.start();
-    setTimeout(function(){
-        NProgress.done();
-    },200);
-
     // 屏幕最小化
     $('.glyphicon-chevron-left').click(function(){
         $('.right-page').animate({
@@ -173,7 +168,6 @@ $(function(){
                 $('.main ' + element + ' input[name="' + Id + '"]').prop("checked", true);
                 that.showReminder( element,Id,type,content_enabled );
             }
-            
         },
         // 表格中的批量删除
         batchDel: function( event,element ){
@@ -218,8 +212,6 @@ $(function(){
             }
         },
         showNewReminder: function( element,Id,type,content ){
-
-
             let that = this;
 
             $('#shadow').show().animate({opacity: 1}, function(){
@@ -250,7 +242,6 @@ $(function(){
                 // 关闭全部删除提醒框时，取消勾选全部选项
                 $('.main ' + element + ' input[type="checkbox"]').prop("checked", false);
             }
-
             
             $('.main .reminder').addClass('hidden');
             $('#shadow').hide().animate({opacity: 0});
@@ -271,13 +262,23 @@ $(function(){
             });
             UE.getEditor('editor').setContent( '' );
         },
+        nprogressStart: function(){
+            if( isPc() ){
+                NProgress.start();
+            }
+        },
+        nprogressDone: function(){
+            if( isPc() ){
+                NProgress.done();
+            }
+        },
         getAjax: function( url ){
             let that = this;
             return $.ajax({
                 type: 'get',
                 url: url,
                 beforeSend: function(){
-                    NProgress.start();
+                    Command.nprogressStart();
                 }
             })
         },
@@ -289,7 +290,7 @@ $(function(){
                 url: url,
                 data: data,
                 beforeSend: function(){
-                    NProgress.start();
+                    Command.nprogressStart();
                 }
             })
         },
@@ -303,7 +304,7 @@ $(function(){
                 processData: false,
                 contentType: false,
                 beforeSend: function(){
-                    NProgress.start();
+                    Command.nprogressStart();
                 }
             })
         },
@@ -381,7 +382,7 @@ $(function(){
         home: function(){
             Command.getAjax( '/backstage.html/nav_home' )
                 .done( function( data ){
-                    NProgress.done();
+                    Command.nprogressDone();
                     let html = ejs.render( $('#home').html(), {acticles: data[0], updateNumber: data[1], readingNumber: data[2] } );
                     $('.main').html(html)
                 })
@@ -390,7 +391,7 @@ $(function(){
         catalog: function(){
             Command.getAjax( '/backstage.html/nav_catalog' )
                 .done( function( data ){
-                    NProgress.done();
+                    Command.nprogressDone();
 
                     let catalogName = data[0];
                     let catalogNumber = data[1];
@@ -410,7 +411,7 @@ $(function(){
         article: function(catalogId){
             Command.getAjax( '/backstage.html/nav_article/?catalogId=' + catalogId )
                 .done(function( data ){
-                    NProgress.done();
+                    Command.nprogressDone();
                     // 判断是否为第一次加载
                     let first = true;
                     let html = ejs.render( $('#article').html(), { total: data[0],acticles: data[1]} );
@@ -432,10 +433,10 @@ $(function(){
                 type: 'get',
                 url: '/js/ueditor/ue?action=listimage',
                 beforeSend: function(){
-                    NProgress.start();
+                    Command.nprogressStart();
                 }
             }).done(function(data){
-                NProgress.done();
+                Command.nprogressDone();
                 let pages = Math.ceil(data.total/Album.limit)                    
                 let start = (Album.curr-1) * Album.limit;
                 let end = (Album.curr-1) * Album.limit + Album.limit;
@@ -451,7 +452,7 @@ $(function(){
         public: function(){
             Command.getAjax( '/backstage.html/nav_public' )
                 .done( function( data ){
-                    NProgress.done();
+                    Command.nprogressDone();
                     let html = ejs.render( $('#public').html(), { catalogs: data } );
                     $('.main').html(html)
                     // ueditor编辑器:因为ajax不能重复加载editor,所以在加载前先销毁editor
@@ -466,25 +467,39 @@ $(function(){
                 })
         },
         comment: function(){
-            console.log('这里是评论管理');
+            Command.getAjax( '/backstage.html/nav_comment' )
+                .done(function(data){
+                    Command.nprogressDone();
+                    // 判断是否为第一次加载
+                    let first = true;
+                    let html = ejs.render( $('#comment').html(),{ total: data[0], comments: data[1] });
+                    $('.main').html( html );
+                    let curr = Comment.curr;
+                    let pages = Math.ceil(data[0]/Comment.limit);
+                    // 初次加载，给分页绑定事件，当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                    Comment.laypage( first,curr,pages );
+                })
         },
         accountsModify: function(){
-            NProgress.start();
+            Command.nprogressStart();
             let html = ejs.render( $('#accounts-modify').html() );
             setTimeout(function(){
-                NProgress.done();
+                Command.nprogressDone();
                 $('.main').html(html);
             },200)
         },
         accountsList: function(){
             Command.getAjax( '/backstage.html/nav_accounts/administrator_list' )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     let html = ejs.render( $('#accounts-list').html(),{ total: data[0], administrators: data[1] });
                     $('.main').html( html );
                 })
         }
     };
+
+    // 移动端自带有进度条所以不需要程序提供
+    Command.nprogressStart();
 
     // 当页面刷新，令其留在当前页面（页面由ajax生成，如果不做处理的话刷新会直接跳回初始页面）
     let hash = window.location.hash;
@@ -515,7 +530,18 @@ $(function(){
         }
     });
 
-     // 点击事件：首页
+    // 登出
+    $('.signOut').click(function(){
+            let url = '/backstage.html/signOut'
+            Command.getAjax(url)
+                .done(function(data){
+                    if( data.code === 1 ){
+                        return window.location.href = '/login.html';
+                    }
+                })
+        })
+
+    // 点击事件：首页
     $('.nav-side .nav-home').click(function(){
         getData.home();
     });
@@ -541,6 +567,11 @@ $(function(){
         getData.public();
     });
 
+    // 评论管理
+    $('.nav-side .nav-comment').click(function(){
+        getData.comment();
+    })
+
     // 点击事件：帐号修改
     $('.nav-side .accounts-modify').click(function(){
         getData.accountsModify();
@@ -564,7 +595,7 @@ $(function(){
             }
             Command.postAjax( this.addUrl,data )
                 .done(function(data){
-                        NProgress.done();
+                        Command.nprogressDone();
                         if( data.code !== 1 ){
                             $('.main .edit-header').css('color','red');
                             
@@ -584,7 +615,7 @@ $(function(){
             }
             Command.postAjax( this.editUrl,data )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     if( data.code !== 1 ){
                         $('.main .edit-header').css('color','red');
                         
@@ -603,10 +634,9 @@ $(function(){
             }
 
             let total = $('.main .main-header span:last-child strong').html();
-
             Command.postAjax( this.deleteUrl,data )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     if( data.code === 1 ){
                         catalogs.forEach(function( catalogId ){
                             $('.main table input[name="'+ catalogId + '"]').parents('tr').remove();
@@ -659,18 +689,19 @@ $(function(){
 
     // 文章管理
     let Acticle = {
-        element: '#article-page',
-        editElement: '#article-edit',
         curr: 1,// 默认当前页面
         limit: 10,// 默认显示数量
+        element: '#article-page',
+        editElement: '#article-edit',
+        pigeViewElement: '#acticle_pigeViews',
         editUrl: '/backstage.html/nav_article/article_edit',
         deleteUrl: '/backstage.html/nav_article/article_del',
         acticleUrl: '/backstage.html/nav_article/article_det',
         create: function( acticles ){
-            var html;
+            let html;
             acticles.forEach(function( acticle ){
-                var stickyPost;
-                var lastest;
+                let stickyPost;
+                let lastest;
                 // 是否置顶
                 if( acticle.stickyPost ){
                     stickyPost += '<td><strong>是</strong></td>'
@@ -685,23 +716,55 @@ $(function(){
                 }
 
                 html += '<tr>';
-                html += '    <th><input type="checkbox" name="' + acticle._id + '"></th>';
-                html += '    <td>';
+                html += '   <th><input type="checkbox" name="' + acticle._id + '"></th>';
+                html += '   <td>';
                 html += '       <img src="/img/thumbnail/' + acticle.thumbnail + '" height="60px">';
-                html += '    </td>';
-                html += '    <td>' + acticle.title + '</td>';
-                html +=      stickyPost;
-                html +=      lastest;
-                html +=      '<td><strong>' + acticle.meta.createAt + '</strong></td>';
-                html +=      '<td><strong>' + acticle.meta.createAt + '</strong></td>';
-                html += '    <td>';
+                html += '   </td>';
+                html += '   <td><strong>' + acticle.title + '</strong></td>';
+                html +=     stickyPost;
+                html +=     lastest;
+                html += '   <td><strong>' + acticle.meta.createAt + '</strong></td>';
+                html += '   <td><strong>' + acticle.meta.createAt + '</strong></td>';
+                html += '   <td>';
+                html += '       <strong>';
+                html += '           <a href="javascript:;" class="pige-view" acticleId="' + acticle._id + '">' + acticle.pigeView + '</a>';
+                html += '       </strong>';
+                html += '   </td>';
+                html += '   <td>';
                 html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="修改文章">';
                 html += '           <i class="glyphicon glyphicon-pencil" name="' + acticle._id + '"></i>';
                 html += '       </a>';
                 html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除文章">';
                 html += '           <i class="glyphicon glyphicon-trash" name="' + acticle._id + '"></i>';
                 html += '       </a>';
-                html += '    </td>';
+                html += '   </td>';
+                html += '</tr>';
+            })
+            return html;
+        },
+        createPigeView: function( comments ){
+            let html;
+            let content;
+            comments.forEach(function( comment ){
+                if(comment.to){
+                    content = comment.content;
+                }else{
+                    content = '文章';
+                }
+                html += '<tr>';
+                html += '   <th><input type="checkbox" name="' + comment._id + '"></th>';
+                html += '   <td>';
+                html += '       <img src="' + comment.from.thumbnail + '" height="30">';
+                html += '   </td>';
+                html += '   <td><strong>' + comment.from.nickName + '</strong></td>';
+                html += '   <td><strong>' + comment.content + '</strong></td>';
+                html += '   <td><strong>' + content + '</strong></td>';
+                html += '   <td><strong>' + comment.meta.createAt + '</strong></td>';
+                html += '   <td>';
+                html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除文章">';
+                html += '           <i class="glyphicon glyphicon-trash" name="' + comment._id + '"></i>';
+                html += '       </a>';
+                html += '   </td>';
                 html += '</tr>';
             })
             return html;
@@ -729,7 +792,7 @@ $(function(){
                     let pages = Math.ceil(data[0]/Acticle.limit);
                     Acticle.laypage( false,curr,pages,catalogId );
                     Command.closeReminder( event,element );
-                    NProgress.done();
+                    Command.nprogressDone();
                 });
         },
         confirmDel: function( event,element ){
@@ -779,7 +842,7 @@ $(function(){
             }
             Command.postAjax( this.acticleUrl,data )
                 .done(function( data ){
-                    NProgress.done();
+                    Command.nprogressDone();
                     let catalogs = data[0];
                     let acticle = data[1][0];
 
@@ -845,34 +908,76 @@ $(function(){
 
             Command.postAjax( this.editUrl,acticle )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     Command.clearEdit( element )
                     Command.showReminder( element,null,null,'文章修改成功');
                 })
         },
+        pigeView: function( event ){
+            let acticleId = $(event.target).attr('acticleId');
+            let url = '/backstage.html/nav_article/pige_view?acticleId=' + acticleId;
+            Command.getAjax( url )
+                .done(function(data){
+                    Command.nprogressDone();
+                    // 动态生成下一页的内容
+                    let html = ejs.render( $('#acticle_pigeView').html(),{ total: data[0], comments: data[1]} );
+                    $('.main').html( html );
+                    let first = true;
+                    let curr = Acticle.curr;
+                    let pages = Math.ceil(data[0]/Acticle.limit);
+                    // 初次加载，给分页绑定事件，当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                    Acticle.laypagePigeView( first,curr,pages,acticleId );
+                })
+                
+        },
         laypage: function( first,curr,pages,catalogId ){
             laypage({
-                    cont: $('#article-page .paging'), 
-                    curr: curr,
-                    pages: pages, 
-                    groups: 3, 
-                    skin: '#4C3B2F', 
-                    // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
-                    jump: function( data ){
-                        // 如果是首次加载并且当前页为第一页
-                        if( first && (data.curr === 1) ){
-                            first = false;
-                            return;
-                        }
-                        let url = '/backstage.html/nav_article/?catalogId=' + catalogId + '&curr=' + data.curr;
-                        Command.getAjax( url )
-                            .done(function(data){
-                                NProgress.done();
-                                // 动态生成下一页的内容
-                                let html = Acticle.create(data[1]);
-                                $('.main #article-page table tbody').html( html )
-                            })
+                cont: $('#article-page .paging'), 
+                curr: curr,
+                pages: pages, 
+                groups: 3, 
+                skin: '#4C3B2F', 
+                // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                jump: function( data ){
+                    // 如果是首次加载并且当前页为第一页
+                    if( first && (data.curr === 1) ){
+                        first = false;
+                        return;
                     }
+                    let url = '/backstage.html/nav_article/?catalogId=' + catalogId + '&curr=' + data.curr;
+                    Command.getAjax( url )
+                        .done(function(data){
+                            Command.nprogressDone();
+                            // 动态生成下一页的内容
+                            let html = Acticle.create(data[1]);
+                            $('.main #article-page table tbody').html( html )
+                        })
+                }
+            })
+        },
+        laypagePigeView: function( first,curr,pages,acticleId ){
+            laypage({
+                cont: $('#acticle_pigeViews .paging'), 
+                curr: curr,
+                pages: pages, 
+                groups: 3, 
+                skin: '#4C3B2F', 
+                // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                jump: function( data ){
+                    // 如果是首次加载并且当前页为第一页
+                    if( first && (data.curr === 1) ){
+                        first = false;
+                        return;
+                    }
+                    let url = '/backstage.html/nav_article/pige_view?acticleId=' + acticleId + '&curr=' + data.curr;
+                    Command.getAjax( url )
+                        .done(function(data){
+                            Command.nprogressDone();
+                            // 动态生成下一页的内容
+                            let html = Acticle.createPigeView(data[1]);
+                            $('.main #acticle_pigeViews table tbody').html( html )
+                        })
+                }
             })
         }
     };
@@ -893,26 +998,25 @@ $(function(){
         },
         laypage: function( first,curr,pages,list ){
             laypage({
-                    cont: $('.main #album-page .paging'), 
-                    curr: curr,
-                    pages: pages, 
-                    groups: 3, 
-                    skin: '#4C3B2F', 
-                    // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
-                    jump: function( data ){
-                        
-                        // 如果是首次加载并且当前页为第一页
-                        if( first && (data.curr === 1) ){
-                            first = false;
-                            return;
-                        }
-                        let start = (data.curr-1) * Album.limit;
-                        let end = (data.curr-1) * Album.limit + Album.limit;
-                        let albums = list.slice( start,end );
-                        let html = Album.create( albums );
-                        $('.main #album-page .main-body').html( html );
-
+                cont: $('.main #album-page .paging'), 
+                curr: curr,
+                pages: pages, 
+                groups: 3, 
+                skin: '#4C3B2F', 
+                // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                jump: function( data ){
+                    
+                    // 如果是首次加载并且当前页为第一页
+                    if( first && (data.curr === 1) ){
+                        first = false;
+                        return;
                     }
+                    let start = (data.curr-1) * Album.limit;
+                    let end = (data.curr-1) * Album.limit + Album.limit;
+                    let albums = list.slice( start,end );
+                    let html = Album.create( albums );
+                    $('.main #album-page .main-body').html( html );
+                }
             })
         }
     };
@@ -981,12 +1085,13 @@ $(function(){
             that.thumbnail( formData )
                 .done(function(data){
                     if( data.code === 1 ){
-                        NProgress.set(0.4);
-                        
+                        if( isPc() ){
+                            NProgress.set(0.4);
+                        }
                         acticle.thumbnail = data.path;
                         that.mainBody( acticle )
                             .done(function(data){
-                                NProgress.done();
+                                Command.nprogressDone();
                                 // 清空
                                 Command.clearEdit( element )
                                 Command.showReminder( element,null,null,'文章发布成功');
@@ -995,6 +1100,147 @@ $(function(){
                 })
         }
     };
+
+    // 评论管理
+    let Comment = {
+        curr: 1,// 默认当前页面
+        limit: 10,// 默认显示数量
+        element: '#comment-page',
+        addUrl: '/backstage.html/nav_comment/comment_add',
+        deleteUrl: '/backstage.html/nav_comment/comment_del',
+        create: function( comments ){
+            var html;
+            comments.forEach(function( comment ){
+                html += '<tr>';
+                html += '   <th><input type="checkbox" name="' + comment._id + '"></th>';
+                html += '   <td><strong>' + comment.superior.title + '</strong></td>';
+                html += '   <td>';
+                html += '       <img src="' + comment.from.thumbnail + '" width="30">';
+                html += '   </td>';
+                html += '   <td><strong>' + comment.from.nickName + '</strong></td>';
+                html += '   <td><strong>' + comment.content + '</strong></td>';
+                html += '   <td><strong>' + comment.meta.createAt + '</strong></td>';
+                html += '   <td>';
+                html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="回复">';
+                html += '           <i class="glyphicon glyphicon-pencil" name="' + comment.superior._id + '&' + comment.from._id + '"></i>';
+                html += '       </a>';
+                html += '       <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除评论">';
+                html += '           <i class="glyphicon glyphicon-trash" name="' + comment._id + '"></i>';
+                html += '       </a>';
+                html += '   </td>';
+                html += '</tr>';
+            })
+            return html;
+        },
+        delete: function( event,element,comments ){
+            let data = {
+                comments: comments
+            }
+            let total = $('.main .main-header span:last-child strong').html();
+
+            Command.postAjax( this.deleteUrl,data )
+                .done(function(data){
+                    Command.nprogressDone();
+                    if( data.code === 1 ){
+                        $('.main .main-header span:last-child strong').html( total-comments.length );
+                        comments.forEach(function( commentId ){
+                            $('.main table input[name="'+ commentId + '"]').parents('tr').remove();
+                            // 需要更新文章管理
+                        })
+                    }
+                    Command.closeReminder( event,element )
+                });
+        },
+        // 三种情况下：1.单一删除提醒、2.全部删除提醒、3.至少勾选一个选项，点击操作提醒框确定键会导致三种情况下所产生的动作不同
+        confirmDel: function( event,element ){
+            let comments = [];
+            let type = $('.main .reminder').attr('name');
+            
+            // 在至少勾选一个选项的情况下
+            if( type === 'warn' ){
+                return Command.closeReminder( event,element )
+            }else if( type === 'singleDel' ){
+                let commentId = $(event.target).attr('name');
+                
+                // 正常情况下是存在commentId的，若不存在，则指的是不能删除的管理员
+                if( !commentId ){
+                    return Command.closeReminder( event,element )
+                }
+
+                comments.push( commentId );
+            }else if( type === 'batchDel' ){
+
+                // 批量获取commentId
+                $('.main ' + element + ' input[type="checkbox"]:checked').each(function(){
+                    let commentId = $(this).attr('name');
+                    comments.push( commentId );
+                })
+                //如果第一个的值为undefined，说明是全选，所以需要排除全选键
+                if( comments[0] === undefined ){
+                    comments.shift(1);
+                }
+            }
+            this.delete( event,element,comments );
+        },
+        confirmEdit: function( event,element ){
+            let that = this;
+            let openId = $('.author').attr('openId');
+            // 没有绑定QQ帐号不能回复
+            if( !openId ){
+                Command.closeEdit();
+                Command.showReminder( element,'null','warn','请先绑定QQ帐号' )
+                return false;
+            }
+
+            // 回复内容不能为空
+            let content = $('.main .edit .edit-input').val();
+            if( Command.isEmpty(content) ){
+                $('.main .edit-header').css('color','red');
+                return $('.main .edit-header span').html('回复内容不能为空');
+            }
+            
+            let from = openId;
+            let acticleId = $(event.target).attr('name').split('&')[0];
+            let to = $(event.target).attr('name').split('&')[1];
+            let comment = {
+                superior: acticleId,
+                from: openId,
+                content: content.replace(/</g, "&lt;").replace(/>/g, "&gt;"),
+                to: to
+            }
+            Command.postAjax( that.addUrl,comment )
+                .done(function(data){
+                    Command.nprogressDone();
+                    Command.closeEdit();
+                    $('.nav-side .nav-comment').click();
+                })
+        },
+        laypage: function( first,curr,pages,catalogId ){
+            laypage({
+                cont: $('#comment-page .paging'), 
+                curr: curr,
+                pages: pages, 
+                groups: 3,
+                skin: '#4C3B2F', 
+                // 当用户点击分页时，会触动jump函数去获取下一页的内容并插入tbody中
+                jump: function( data ){
+                    // 如果是首次加载并且当前页为第一页
+                    if( first && (data.curr === 1) ){
+                        first = false;
+                        return;
+                    }
+                    let url = '/backstage.html/nav_comment/?curr=' + data.curr;
+                    Command.getAjax( url )
+                        .done(function(data){
+                            Command.nprogressDone();
+                            // 动态生成下一页的内容
+                            let html = Comment.create(data[1]);
+                            $('.main #comment-page table tbody').html( html )
+                        })
+                }
+            })
+        }
+    }
 
     // 帐号管理
     let Account = {
@@ -1014,7 +1260,7 @@ $(function(){
             }
             Command.postAjax( this.modifyUrl,data )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     if( data.code === 1 ){
                         Command.showReminder( element,null,null,'修改密码成功！');
                         $('.main ' + element + ' form input[type="password"]').val('');
@@ -1031,7 +1277,7 @@ $(function(){
             }
             Command.postAjax( this.addUrl,data )
                 .done(function(data){
-                        NProgress.done();
+                        Command.nprogressDone();
                         if( data.code !== 1 ){
                             $('.main .edit-header').css('color','red');
                             
@@ -1048,7 +1294,7 @@ $(function(){
             }
             Command.postAjax( this.editUrl,data )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     if( data.code !== 1 ){
                         $('.main .edit-header').css('color','red');
                         
@@ -1066,7 +1312,7 @@ $(function(){
             let total = $('.main .main-header span:last-child strong').html();
             Command.postAjax( this.deleteUrl,data )
                 .done(function(data){
-                    NProgress.done();
+                    Command.nprogressDone();
                     if( data.code !== 1 ){
                         $('.main .reminder').attr('name','warn');
                         
@@ -1243,8 +1489,13 @@ $(function(){
             case 'glyphicon glyphicon-pencil': 
                 Acticle.edit( event,Acticle.element );
                 break;
+            // 评论数量
+            case 'pige-view':
+                Acticle.pigeView( event )
+                break;
         }
     })
+
 
     // 文章编辑
     $('.main').on('click',Acticle.editElement,function(event){
@@ -1266,7 +1517,37 @@ $(function(){
                 Command.closeReminder( event,Acticle.editElement );
                 break;
         }
-        
+    });
+
+    // 文章评论管理
+    $('.main').on('click',Acticle.pigeViewElement,function(event){
+        let className = event.target.className;
+        switch( className ){
+            // 全选与反选
+            case 'batch-selection': 
+                Command.selectAll( event,Acticle.pigeViewElement );
+                break;
+            // 单一删除
+            case 'glyphicon glyphicon-trash':
+                Command.singleDel( event,Acticle.pigeViewElement );
+                break;
+            // 批量删除
+            case 'btn btn-delete del-batch':
+                Command.batchDel( event,Acticle.pigeViewElement );
+                break;
+            // 确定删除 
+            case 'btn btn-delete': 
+                Comment.confirmDel( event,Acticle.pigeViewElement );
+                break;
+            // 关闭操作提醒框
+            case 'glyphicon glyphicon-remove reminder-remove':
+                Command.closeReminder( event,Acticle.pigeViewElement );
+                break;
+            // 关闭操作提醒框                        
+            case 'btn btn-default reminder-cancel': 
+                Command.closeReminder( event,Acticle.pigeViewElement );
+                break;      
+        }
     });
 
     // 发布文章
@@ -1288,6 +1569,53 @@ $(function(){
                 Command.closeReminder( event,Public.element );
                 break;
                 
+        }
+    });
+
+    // 评论管理
+    $('.main').on('click', Comment.element, function(event){
+        let className = event.target.className;
+        switch( className ){
+            // 全选与反选
+            case 'batch-selection': 
+                Command.selectAll( event,Comment.element );
+                break;
+            // 单一删除
+            case 'glyphicon glyphicon-trash':
+                Command.singleDel( event,Comment.element );
+                break;
+            // 批量删除
+            case 'btn btn-delete del-batch':
+                Command.batchDel( event,Comment.element );
+                break;
+            // 确定删除 
+            case 'btn btn-delete': 
+                Comment.confirmDel( event,Comment.element );
+                break;
+            // 关闭操作提醒框
+            case 'glyphicon glyphicon-remove reminder-remove':
+                Command.closeReminder( event,Comment.element );
+                break;
+            // 关闭操作提醒框                        
+            case 'btn btn-default reminder-cancel': 
+                Command.closeReminder( event,Comment.element );
+                break;
+            // 回复
+            case 'glyphicon glyphicon-pencil': 
+                Command.edit( event,Comment.element,'请输入回复的内容' );
+                break;
+            // 确定更新栏目或编辑栏目
+            case 'btn btn-success': 
+                Comment.confirmEdit( event,Comment.element );
+                break;
+            // 关闭回复提醒框
+            case 'btn btn-default edit-cancel':
+                Command.closeEdit();
+                break;
+            // 关闭回复提醒框
+            case 'glyphicon glyphicon-remove edit-remove':
+                Command.closeEdit();
+                break;
         }
     });
 
@@ -1348,7 +1676,7 @@ $(function(){
             case 'batch-selection': 
                 Command.selectAll( event,Account.element.list );
                 break;
-                // 单一删除
+            // 单一删除
             case 'glyphicon glyphicon-trash':
                 Command.singleDel( event,Account.element.list );
                 break;

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>跳转中...</title>
+	<script>
+		var hash = window.location.hash;
+		var access_token = hash.split('#')[1].split('&')[0];
+		function getIdentity(){
+			var getOpenIdUrl = '/authentication?' + access_token
+			var xmlhttp=new XMLHttpRequest();
+			xmlhttp.open("GET",getOpenIdUrl,true);
+			xmlhttp.send();
+			xmlhttp.onreadystatechange = function(){
+			  	if (xmlhttp.readyState === 4 && xmlhttp.status === 200){
+			  		var search = window.location.search;
+			  		var length = search.length;
+			  		var redirect = search.substr(0,length-1);
+			  		window.location.href = '/blog.html/detail' + redirect + '#comments';
+			   	}
+			}
+		}
+		getIdentity();
+	</script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<style type="text" id="acticle_pigeView">
+    <div id="acticle_pigeViews">
+        <div class="col-lg-12 main-header">
+            <span>
+                <a href="javascript:;" class="btn btn-delete del-batch"><i class="glyphicon glyphicon-warning-sign"></i>批量删除</a>
+            </span>
+            <span class="pull-right">共有<strong><%= total %></strong>评论</span>
+        </div>
+        <div class="main-body table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="batch-selection">
+                        </th>
+                        <th>头像</th>
+                        <th>昵称</th>
+                        <th>评论内容</th>
+                        <th>评论对象</th>
+                        <th>评论时间</th>
+                        <th>编辑管理</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% comments.forEach(function(comment){ %>
+                        <tr>
+                            <th><input type="checkbox" name="<%= comment._id %>"></th>
+                            <td><img src="<%= comment.from.thumbnail %>" width="30"></td>
+                            <td><strong><%= comment.from.nickName %></strong></td>
+                            <td><strong><%= comment.content %></strong></td>
+                            <% if(comment.to){ %>
+                                <td><strong><%= comment.to.nickName %></strong></td>
+                            <% }else{ %>
+                                <td><strong>文章</strong></td>
+                            <% } %>
+                            <td><strong><%= comment.meta.createAt %></strong></td>
+                            <td>
+                                <a href="javascript:;" class="tooltip-test" data-toggle="tooltip" title="删除评论">
+                                    <i class="glyphicon glyphicon-trash" name="<%= comment._id %>"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <span class="paging pull-right"></span>
+        </div>
+    </div>
+</style>

@@ -10,6 +10,7 @@ const fs = Promise.promisifyAll(require("fs"));
 let Admin = require('../models/admin.js');
 let Acticle = require('../models/acticle.js');
 let Catalog = require('../models/catalog.js');
+let Comment = require('../models/comment.js');
 
 // 在线编辑时图片上传地址
 let newImagePath = path.join( dirname, '/public/img/ueditor/');
@@ -23,9 +24,9 @@ let login = (req, res, next) => {
 
 // 检测登录帐号密码
 let checkpwd = (req, res, next) => {
-    return Admin.findOne({
-            adminName: req.body.username
-        }).then((data) => {
+    return Admin.findOne({ adminName: req.body.username })
+        .populate('openId')
+        .then((data) => {
             // 用户不存在
             if (!data) {
                 return res.json({ code: 1001, message: '用户不存在' })
@@ -37,9 +38,22 @@ let checkpwd = (req, res, next) => {
             }
             req.session.adminName = data.adminName;
             req.session.jurisdiction = data.jurisdiction;
+
+            if( !data.openId ){
+                req.session.openId = null;            
+            }else{
+                req.session.openId = data.openId._id;
+            }
             // 通过验证
             res.json({ code: 1 });
         })
+};
+
+let signOut = (req, res, next) => {
+    delete req.session.openId;
+    delete req.session.adminName;
+    delete req.session.jurisdiction;
+    res.json({"code": 1});
 };
 
 // 获取系统消息
@@ -109,14 +123,13 @@ let getReadNUmber = () => {
         });
 };
 
-
 // 获取数量
 let getCount = ( model,options ) => {
     return model.count(options)
         .catch((error) => {
             return Promise.reject(error)
         });
-}
+};
 
 // 打印数据字段
 let getField = ( model,options,fields,skip,limit,reorder ) => {
@@ -134,14 +147,44 @@ let getField = ( model,options,fields,skip,limit,reorder ) => {
         .catch((error) => {
             return Promise.reject(error)
         });
+};
+
+let getComment = (option,skip,limit) => {
+    let hop = parseInt(skip) || 0;
+    let length = parseInt(limit) || null;
+    return Comment.find(option)
+        .populate('superior','title')
+        .populate('from')
+        .populate('to')
+        .sort({'meta.createAt': -1})
+        .skip(hop)
+    	.limit(length)        
+        .lean()
+        .then((data) => {
+            return data;
+        })
+};
+
+let hasOnepopulate = (model,options,populate) => {
+    let option = options || null;
+    let connect = populate || null;
+    
+    return model.find(option)
+        .populate(connect)
+        .catch((error) => {
+            return Promise.reject(error)
+        });
 }
 
 // 展示后台首页
 let showIndex = (req, res, next) => {
-    // return Promise.all([getNews(), getActicles(), getUpdateNumber(), getReadNUmber(), getField( Catalog,null,'catalogName' )])
+    let currentUser = {
+        adminName: req.session.adminName,
+        openId: req.session.openId
+    }
     return Promise.all([getNews(), getField( Catalog,null,'catalogName' )])
         .then((data) => {
-            res.render('backstage/backstage.html', { news: data[0], catalogs: data[1] });
+            res.render('backstage/backstage.html', { news: data[0], catalogs: data[1], currentUser:currentUser });
         })
         .catch((error) => {
             return Promise.reject(error);
@@ -160,7 +203,6 @@ let acticleTypes = () => {
             return Promise.reject(error);
         });
 };
-
 
 // 首页
 let navHome = (req, res, next) => {
@@ -182,7 +224,7 @@ let navCatalog = (req, res, next) => {
         .catch((error) => {
             return Promise.reject(error);
         });
-}
+};
 
 // 添加目录
 let catalogAdd = (req, res, next) => {
@@ -245,10 +287,9 @@ let navArticle = ( req,res,next ) => {
         superior: req.query.catalogId
     }
     let record = {'meta.createAt': -1};
-    let fields = 'title thumbnail stickyPost lastest meta'; 
     let paging = utilFile.paging( req.query.curr );
 
-    return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,fields,paging.skip,paging.limit,record ) ])
+    return Promise.all([ getCount( Acticle,options ),getField( Acticle,options,null,paging.skip,paging.limit,record ) ])
         .then( (data) => {
             data[1].forEach( (acticle ) => {
                 acticle.meta.createAt = moment(acticle.meta.createAt).format('YYYY-MM-DD');
@@ -273,7 +314,7 @@ let ArticleDet = ( req,res,next ) => {
         .catch((error) => {
             return Promise.reject(error)
         })
-}
+};
 
 // 更新文章
 let ArticleEdit = ( req,res,next ) => {
@@ -310,7 +351,7 @@ let ArticleEdit = ( req,res,next ) => {
         .catch( (error) => {
             return Promise.reject( error );
         })
-}
+};
 
 // 删除文章
 let ArticleDel = ( req,res,next ) => {
@@ -360,7 +401,22 @@ let ArticleDel = ( req,res,next ) => {
         .catch( (error) => {
             return Promise.reject( error );
         })
-}
+};
+
+// 文章评论
+let pigeView = ( req,res,next ) => {
+    let option = {
+        superior: req.query.acticleId
+    }
+    let paging = utilFile.paging( req.query.curr );
+    Promise.all([ getCount( Comment,option ),getComment( option,paging.skip,paging.limit ) ])
+        .then((data) => {
+            data[1].forEach( (comment ) => {
+                comment.meta.createAt = moment(comment.meta.createAt).format('YYYY-MM-DD');
+            })
+            res.json(data);
+        })
+};
 
 // 发布文章
 let navPublic = ( req,res,next ) => {
@@ -371,7 +427,7 @@ let navPublic = ( req,res,next ) => {
         .catch((error) => {
             return Promise.reject(error);
         })
-}
+};
 
 let thumbnailSave = ( req,res,next ) => {
     let exist = fs.existsSync(thumbnailPath);
@@ -389,7 +445,7 @@ let thumbnailSave = ( req,res,next ) => {
         // 生产环境:linux
         // res.json({"code": 1, "path": req.file.path.split('thumbnail/')[1]});
     })
-}
+};
 
 // 移动图片至图片文件夹中并删除临时图片文件夹中的不需要用上的部分
 let moveAndDeleteImage = ( imgPaths ) => {
@@ -416,7 +472,7 @@ let moveAndDeleteImage = ( imgPaths ) => {
         .then( () => {// 删除临时文件夹中的文件
             return del([ oldImagePath + '*' ])
         })
-}
+};
 
 // 保存文章
 let mainBodySave = ( req,res,next ) => {
@@ -459,21 +515,68 @@ let mainBodySave = ( req,res,next ) => {
         .catch( (error) => {
             return Promise.reject( error );
         })
-}
+};
+
+// 评论管理
+let navComment = (req,res,next) => {
+    let paging = utilFile.paging( req.query.curr );
+    Promise.all([ getCount( Comment ), getComment( null,paging.skip,paging.limit ) ])
+        .then((data) => {
+            data[1].forEach( (comment ) => {
+                comment.meta.createAt = moment(comment.meta.createAt).format('YYYY-MM-DD');
+            })
+            res.json(data);
+        })
+};
+
+// 删除评论
+let commentDel = (req,res,next) => {
+    return Comment.remove({ "_id": { $in: req.body.comments } })
+        .then((data) => {
+            res.json({ "code": 1 });
+        })
+        .catch((error) => {
+            return Promise.reject(error);
+        })
+};
+
+let commentAdd = (req,res,next) => {
+    let result;
+    let comment =  new Comment({
+        superior: req.body.superior,
+        from: req.body.from,
+        content: req.body.content,
+        to: req.body.to
+    })
+    comment.save()
+        .then((data) => {
+            result = data;
+            return Acticle.update({
+                _id: data.superior
+            },{
+                $inc:{
+                    pigeView: 1
+                }
+            })
+        })
+        .then((data) => {
+            res.json(result);
+        })
+};
 
 
 // 帐号管理
 let administratorList = (req, res, next) => {
-
     let fields = 'adminName jurisdiction';
-    Promise.all([ getCount( Admin ), getField( Admin,null,fields )])
+    let populate = 'openId';
+    Promise.all([ getCount( Admin ), hasOnepopulate( Admin,null,populate )])
         .then((data) => {
             res.json(data);
         })
         .catch((error) => {
             return Promise.reject(error);
         })
-}
+};
 
 // 添加管理员
 let administratorAdd = (req, res, next) => {
@@ -504,7 +607,7 @@ let administratorAdd = (req, res, next) => {
         .catch( ( error ) => {
             return Promise.reject(error);
         })
-}
+};
 
 // 编辑管理员
 let administratorEdit = ( req,res,next ) => {
@@ -578,9 +681,8 @@ let modifyPassword = ( req,res,next ) => {
                 .catch((error) => {
                     return Promise.reject(error);
                 })
-
         })
-}
+};
 
 let ueditor = ( req,res,next ) => {
     //客户端上传文件设置
@@ -620,10 +722,11 @@ let ueditor = ( req,res,next ) => {
         res.setHeader('Content-Type', 'application/json');
         res.redirect('/js/ueditor/nodejs/config.json');
     }
-}
+};
 
 exports.login = login;
 exports.checkpwd = checkpwd;
+exports.signOut = signOut;
 exports.showIndex = showIndex;
 exports.navHome = navHome;
 exports.navCatalog = navCatalog;
@@ -634,9 +737,13 @@ exports.navArticle = navArticle;
 exports.ArticleDet = ArticleDet;
 exports.ArticleDel = ArticleDel;
 exports.ArticleEdit = ArticleEdit;
+exports.pigeView = pigeView;
 exports.navPublic = navPublic;
 exports.thumbnailSave = thumbnailSave;
 exports.mainBodySave = mainBodySave;
+exports.navComment = navComment;
+exports.commentDel = commentDel;
+exports.commentAdd = commentAdd;
 exports.administratorList = administratorList;
 exports.administratorAdd = administratorAdd;
 exports.administratorEdit = administratorEdit;

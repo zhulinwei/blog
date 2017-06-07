@@ -14,8 +14,9 @@
                         <th>
                             <input type="checkbox" class="batch-selection">
                         </th>
-                        <th>管理员编号</th>
                         <th>管理员名称</th>
+                        <th>QQ昵称</th>
+                        <th>QQ头像</th>
                         <th>管理员权限</th>
                         <th>编辑管理</th>
                     </tr>
@@ -28,8 +29,14 @@
                             <% }else{ %>
                                 <th><input type="checkbox" name="<%= administrator._id %>"></th>                                
                             <% } %>
-                            <td><%= i+1 %></td>
                             <td><strong class="catalogName"><%= administrator.adminName %></strong></td>
+                            <% if( administrator.openId ){ %>
+                                <td><strong class="nickName"><%= administrator.openId.nickName %></strong></td>
+                                <td><img src="<%= administrator.openId.thumbnail %>" width="30"></td>
+                            <% }else{ %>
+                                <td><strong class="nickName">无</td>
+                                <td><img src="/img/da8e974dc_l.jpg" width="30"></td>
+                            <% } %>
                             <% if( administrator.jurisdiction ){ %>
                                 <td><strong>拥有全部权限</strong></td>
                             <% }else{ %>

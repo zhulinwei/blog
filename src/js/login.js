@@ -1,4 +1,5 @@
 require('../css/login.css');
+require("script-loader!./common.js");
 require("script-loader!./plugs/nprogress.js");
 
 $(function(){
@@ -14,10 +15,22 @@ $(function(){
         }
     };
 
+    let nprogressStart = function(){
+        if( isPc() ){
+            NProgress.start();
+        }
+    };
+
+    let nprogressDone = function(){
+        if( isPc() ){
+            NProgress.done();
+        }
+    };
+
     // 构造器，内部存在add()与start()函数，方便以后可轻易地拓展表单验证规则
     let Validator = function() {
         this.cache = [];
-    }
+    };
 
     // 添加检验规则
     Validator.prototype.add = function( dom,rule,errorMsg )  {
@@ -37,7 +50,7 @@ $(function(){
                 return msg;
             }
         }
-    }
+    };
 
     // 给表单添加检验规则
     let addRule = function() {
@@ -48,7 +61,7 @@ $(function(){
 
         let result = validator.start();
         return result;
-    }
+    };
 
 
     // 初次离开username或password时是不会进行检测或错误提示的(经常这样实在是太烦了)，只有在提交表单出错后用户再次输入信息时，才会启用该函数
@@ -65,7 +78,7 @@ $(function(){
             })
             
         }
-    })
+    });
 
     // 提交表单前，检查
     $('.login-box-body .btn-confirm').click(function(event){
@@ -85,10 +98,10 @@ $(function(){
                 'password': $('#password').val()
             },
             beforeSend: function(){
-                NProgress.start();
+                nprogressStart();
             }
         }).done( function(data){
-            NProgress.done();
+            nprogressDone();
 
             if( data.code === 1 ){
                 window.location.href = '/backstage.html'
@@ -98,5 +111,5 @@ $(function(){
                 $('.password-error').removeClass('hidden').children('span').html(data.message);
             }
         })
-    })
+    });
 })     
